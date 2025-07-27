@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="img/svg+xml" href="img/Favicon.svg">
+  <title>Gestión de Proyectos - UTTN</title>
+  <link rel="stylesheet" href="css/index.css" />
+  <link rel="stylesheet" href="css/modal-proyecto.css" />
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <!-- Top Bar -->
+  <header class="top-bar">
+    <button id="btnCerrarSesion" class="add-buttontop">Cerrar sesión</button>
+    <h1>Gestión de Proyectos - UTTN</h1>
+    <div>
+      
+    </div>
+  </header>
+
+  <!-- Nueva fila para botones de acción -->
+  <section class="barra-acciones">
+    <div class="grupo-izquierda">
+      <button id="btnNuevoProyecto" class="add-buttontop">+ Nuevo Proyecto</button>
+
+      
+      <select id="filtro-departamento" class="select-filtro">
+        
+      </select>
+    </div>
+    <div class="botones-derecha">
+      <button id="btnProyectosEliminados" class="btn-principal"> Proyectos Eliminados</button>
+      <button id="btnGenerarPDF" class="add-buttontop"> Generar Reporte</button>
+      <button id="toggleViewButton" class="view-toggle-button">Cambiar vista</button>
+    </div>
+  </section>
+
+  <main class="container">
+    <!-- Sección de filtros (opcional futura implementación) -->
+    <section id="filtros"></section>
+
+    <!-- Grid para las tarjetas de proyectos -->
+    <section id="dashboard" class="card-grid">
+      <!-- Las tarjetas se insertan dinámicamente -->
+    </section>
+  </main>
+
+  <!-- Modal: Crear Proyecto -->
+  <div id="addProjectModal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close" onclick="closeAddModal()">&times;</span>
+      <h2>Crear Nuevo Proyecto</h2>
+
+      <form id="projectForm">
+        <!-- Información básica -->
+        <div class="row-doble">
+          <div class="form-group">
+            <label for="nombre">Nombre del proyecto*</label>
+            <input type="text" id="nombre" required>
+          </div>
+
+          <div class="form-group">
+            <label for="area">Área del proyecto*</label>
+            <input type="text" id="area" required>
+          </div>
+        </div>
+
+
+        <div class="form-group">
+          <label for="descripcion">Descripción detallada*</label>
+          <textarea id="descripcion" rows="4" required></textarea>
+        </div>
+
+        <!-- Encargados -->
+        <div class="form-group">
+          <label>Encargados*</label>
+          <button type="button" id="abrirModalEncargados" class="btn-secundario">Seleccionar encargados</button>
+          <div id="encargadosSeleccionados" class="encargados-contenedor"></div>
+        </div>
+
+        <!-- Toggle de objetivos -->
+        <div class="form-group toggle-group">
+          <label>¿Este proyecto tiene objetivos?</label>
+          <label class="switch">
+            <input type="checkbox" id="toggleObjetivos">
+            <span class="slider round"></span>
+          </label>
+        </div>
+
+        <!-- Sección de objetivos -->
+        <div id="seccionObjetivos" class="form-group hidden">
+          <label>Objetivos del proyecto*</label>
+          <div id="objetivosContainer">
+            <input type="text" class="objetivo-input" placeholder="Escribe un objetivo" required>
+          </div>
+          <button type="button" id="agregarObjetivo" class="btn-secundario">+ Agregar otro objetivo</button>
+        </div>
+
+        <!-- Botón de envío -->
+        <div class="form-group">
+          <button type="submit" class="btn-principal">Crear Proyecto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <div id="modalBitacora" class="modal hidden">
+    <div class="modal-content">
+      <h2>Generar Informe</h2>
+      <form id="formBitacora">
+        <label for="tituloBitacora">Título del Informe</label>
+        <input type="text" id="tituloBitacora" required />
+        <label for="descripcionBitacora">Descripción</label>
+        <textarea id="descripcionBitacora" required></textarea>
+        <div class="modal-actions">
+          <button type="submit" class="btn-principal">Guardar</button>
+          <button type="button" id="btnCancelarBitacora" class="btn-secundario">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modalEliminados" class="modal hidden">
+  <div class="modal-content">
+    <h2>Proyectos Eliminados</h2>
+    <div id="listaEliminados"></div>
+    <button id="btnCerrarEliminados" class="btn-secundario">Cerrar</button>
+  </div>
+</div>
+
+
+  <!-- MODAL VER BITÁCORAS -->
+  <div id="modalVerBitacoras" class="modal hidden">
+    <div class="modal-contenido scrollable">
+      <h2>Bitácoras del Proyecto</h2>
+      <div id="listaBitacoras" class="bitacoras-lista">
+        <!-- Aquí se llenarán las bitácoras dinámicamente -->
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secundario" id="btnCerrarVerBitacoras">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Selección de encargados -->
+  <div id="modalEncargados" class="modal hidden">
+    <div class="modal-content">
+      <span class="close" onclick="cerrarModalEncargados()">&times;</span>
+      <h3>Seleccionar Encargados</h3>
+
+      <!-- Filtro por departamento -->
+      <div class="form-group">
+        <div id="lista-encargados" class="encargados-lista">
+        <!-- Aquí se insertarán los checkboxes dinámicamente -->
+        </div>
+      </div>
+
+      
+
+      <button class="btn-principal" onclick="guardarEncargados()">Guardar selección</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/ind.js"></script>  
+  <script src="js/modal-proyecto.js"></script>
+
+
+</body>
+</html>

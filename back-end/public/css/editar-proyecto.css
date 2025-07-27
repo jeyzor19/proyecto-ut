@@ -1,0 +1,97 @@
+/* editar-proyecto.css */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  background-color: #1ab192;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.logo-escuela img {
+  max-height: 30px;
+  background-color: white;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+main {
+  max-width: 1500px;
+  margin: 40px;
+  margin-top: 15px;
+  margin-bottom: 100px;
+  padding: 80px;
+  padding-top: 5%;
+  background-color: white;
+  border-radius: 8px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+form {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 600px;
+  margin: auto;
+}
+
+label {
+  font-weight: bold;
+  color: #000000;
+}
+
+input[type="text"],
+select,
+textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 100%;
+}
+
+textarea {
+  resize: vertical;
+}
+
+button {
+  background-color: #1ab192;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #148c75;
+}
+
+#nuevoObjetivoTexto{
+    margin-bottom: 10px;
+}

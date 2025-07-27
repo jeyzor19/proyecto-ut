@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="img/svg+xml" href="img/Favicon.svg">
+  <title>Panel DepLider - Gestión de Proyectos</title>
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+  <!-- BARRA SUPERIOR -->
+  <header class="header">
+    <button id="toggleSidebar">☰</button>
+    <h1 class="titulo">Gestión de Proyectos - DepLider</h1>
+    <div class="acciones-superior">
+      <span id="bienvenida"></span>
+      <button id="logoutBtn">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <div class="contenedor-principal">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <h2>Departamentos</h2>
+      <ul id="lista-departamentos">
+        <!-- Botones dinámicos por departamento -->
+      </ul>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="contenido">
+      <div class="barra-controles">
+        <button id="btnNuevoProyecto">+ Nuevo Proyecto</button>
+        <button id="btnVerEliminados">Ver Eliminados</button>
+        <button id="btnVista">Cambiar Vista</button>
+      </div>
+
+      <section id="proyectosContainer" class="vista-tarjeta">
+        <!-- Aquí se renderizan los proyectos -->
+      </section>
+    </main>
+  </div>
+
+  <script src="js/deplider.js"></script>
+</body>
+</html>

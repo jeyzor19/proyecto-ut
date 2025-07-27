@@ -1,0 +1,411 @@
+/* ========== COLORES PRINCIPALES ========== */
+:root {
+  --verde-bandera: #1ab192;
+  --verde-bandera-oscuro: #1ab192;
+  --verde-hover: #0f4d34;
+  --gris-claro: #f5f5f5;
+  --fondo: #ffffff;
+  --texto: #000000;
+}
+
+/* ========== ESTILOS GLOBALES ========== */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--fondo);
+  color: var(--texto);
+}
+
+/* ========== TOP BAR ========== */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--verde-bandera);
+  color: white;
+  padding: 15px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.top-bar h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  flex-grow: 1;
+}
+
+.barra-acciones {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 30px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+
+.add-buttontop {
+  background-color: var(--verde-bandera);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  margin: 0 10px;
+  transition: background-color 0.3s ease;
+}
+
+.add-buttontop:hover {
+  background-color: var(--verde-bandera-oscuro);
+}
+
+.view-toggle-button {
+  background-color: var(--verde-bandera-oscuro);
+  width: 80px;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  margin: 0 10px;
+  transition: background-color 0.3s ease;
+}
+
+.view-toggle-button:hover {
+  background-color: var(--verde-hover);
+}
+
+/* ========== CONTENEDOR PRINCIPAL ========== */
+.container {
+  padding: 20px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+/* ========== CARDS DE PROYECTOS ========== */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.card {
+  background-color: var(--gris-claro);
+  border: 2px solid var(--verde-bandera);
+  border-radius: 8px;
+  padding: 0;
+  height: 420px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.card-body {
+  flex-grow: 1;
+  padding: 16px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.card h3 {
+  margin: 0 0 8px 0;
+  font-weight: bold;
+  font-size: 1.2em;
+  color: #111711;
+}
+
+.card p {
+  margin: 8px 0;
+  line-height: 1.3em;
+}
+
+.contenido-scrollable {
+  overflow-y: auto;
+  flex-grow: 1;
+  padding-right: 4px;
+}
+
+.card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background-color: var(--gris-claro);
+  border-top: 1px solid #ccc;
+}
+
+.card .modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: space-between;
+  position: absolute;
+  bottom: 10px;
+  left: 16px;
+  right: 16px;
+  background-color: var(--gris-claro);
+  padding-top: 8px;
+}
+
+
+.card .progress-bar {
+  margin-top: auto;
+}
+
+/* ========== BARRA DE PROGRESO ========== */
+.progress-bar {
+  background-color: #d4edda;
+  border-radius: 8px;
+  height: 14px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+  margin-top: 10px;
+}
+
+.progress-fill {
+  background-color: var(--verde-bandera);
+  height: 100%;
+  width: 0%;
+  transition: width 0.4s ease;
+}
+
+/* ========== MODAL GENERAL ========== */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+}
+
+/* ========== FORMULARIOS ========== */
+form .form-group {
+  margin-bottom: 1rem;
+}
+
+form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+form input[type="text"],
+form textarea,
+form select {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+/* ========== OBJETIVOS ========== */
+#objetivosContainer .objetivo-input {
+  margin-bottom: 0.5rem;
+  width: 100%;
+  padding: 0.4rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* ========== BOTONES PERSONALIZADOS ========== */
+.btn-principal {
+  background-color: var(--verde-bandera);
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-principal:hover {
+  background-color: var(--verde-bandera-oscuro);
+}
+
+.btn-secundario {
+  background-color: #007BFF;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.btn-secundario:hover {
+  background-color: #0056b3;
+}
+
+.complete-button {
+  background-color: #007BFF;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+/* ========== TOGGLE SWITCH ========== */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 45px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--verde-bandera);
+}
+
+input:checked + .slider:before {
+  transform: translateX(21px);
+}
+
+/* ========== ENCARGADOS ========== */
+.encargados-contenedor {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #333;
+  background-color: #f0f0f0;
+  padding: 0.5rem;
+  border-radius: 5px;
+  min-height: 30px;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 600px) {
+  .top-bar {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .top-bar h1 {
+    font-size: 16px;
+    margin: 10px 0;
+  }
+
+  .add-buttontop, .view-toggle-button {
+    margin: 5px;
+  }
+}
+
+/* ======================== MODAL MEJORADO ======================== */
+
+/* Permitir scroll si el contenido del modal es más grande */
+.modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Mostrar los inputs de nombre y área uno al lado del otro */
+.row-doble {
+  display: flex;
+  gap: 10px;
+}
+
+.row-doble .form-group {
+  flex: 1;
+}
+
+.barra-acciones {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 30px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.botones-derecha {
+  display: flex;
+  gap: 10px;
+}
+
+.grupo-izquierda {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.select-filtro {
+  padding: 8px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: white;
+  color: #333;
+  cursor: pointer;
+}

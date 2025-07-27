@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="icon" type="img/svg+xml" href="img/Favicon.svg">
+
+    <title>Panel de Administración</title>
+    <link rel="stylesheet" href="css/Dashboard.css" />
+</head>
+<body>
+    <header class="topbar">
+        <button id="toggleSidebar">☰ Menú</button>
+        <h1>Administración de Usuarios</h1>
+    </header>
+
+    <div class="container">
+        <nav class="sidebar" id="sidebar">
+        <ul>
+            <li><a href="dashbord.html">Registrar Usuarios</a></li>
+            <li><a href="dashboardusuarios.html">Usuarios</a></li>
+            <li><a href="admin.html">Gestion de Proyectos</a></li>
+            <li class="lastli"><button id="btnCerrarSesion" class="add-buttontop">Cerrar Sesión</button></li>
+
+        </ul>
+        </nav>
+
+        <main class="main-content">
+            <h1>Lista de usuarios</h1>
+            <section class="filtros">
+                <input type="text" id="busquedaUsuario" placeholder="Buscar por nombre o correo">
+                <select id="filtroRol">
+                    <option value="">Todos los roles</option>
+                </select>                
+                <select id="filtroDepartamento">
+                    <option value="">Todos los departamentos</option>
+                </select>
+                <button id="btnLimpiarFiltros">Limpiar filtros</button>
+            </section>
+
+
+        </main>
+    </div>
+    
+
+    <!-- Modal para cambiar rol -->
+    <div id="modalRol" class="modal hidden">
+    <div class="modal-content">
+        <h3>Cambiar Rol</h3>
+        <select id="selectRol"></select>
+        <button onclick="guardarRol()">Guardar</button>
+        <button onclick="cerrarModal('modalRol')">Cancelar</button>
+    </div>
+    </div>
+
+    <!-- Modal para asignar departamentos -->
+    <div id="modalDepartamentos" class="modal hidden">
+    <div class="modal-content">
+        <h3>Asignar Departamentos</h3>
+        <div id="listaDepartamentos"></div>
+        <button onclick="guardarDepartamentos()">Guardar</button>
+        <button onclick="cerrarModal('modalDepartamentos')">Cancelar</button>
+    </div>
+    </div>
+
+    <div id="toast" class="toast hidden">Mensaje</div>
+
+    <script src="./js/dashlogic.js"></script>
+</body>
+</html>

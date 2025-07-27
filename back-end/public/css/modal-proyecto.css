@@ -1,0 +1,139 @@
+
+/* Fondo semitransparente para el modal */
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+/* Ocultar modal inicialmente */
+.hidden {
+  display: none;
+}
+
+/* Contenedor del contenido del modal */
+.modal-content {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 500px;
+  max-width: 90%;
+  position: relative;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* Botón de cierre */
+.close {
+  color: #aaa;
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+}
+
+/* Estilos generales de formulario */
+form .form-group {
+  margin-bottom: 1rem;
+}
+
+form label {
+  display: block;
+  margin-bottom: 0.1rem;
+  font-weight: bold;
+}
+
+form input[type="text"],
+form textarea {
+  width: 100%;
+  padding: 0.1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+#addObjetivoBtn {
+  background-color: #007BFF;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+#addObjetivoBtn:hover {
+  background-color: #0056b3;
+}
+
+/* Inputs para objetivos */
+.objetivo-input {
+  margin-bottom: 0.5rem;
+  width: 100%;
+  padding: 0.4rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+/* Estilo para el modal de visualización de bitácoras */
+#modalVerBitacoras {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  width: 90%;
+  max-width: 600px;
+  max-height: 80%;
+  overflow-y: auto;
+}
+
+/* Fondo oscuro semitransparente para el modal */
+#modalVerBitacoras.hidden {
+  display: none;
+}
+
+/* Estilos internos */
+.bitacora-item {
+  margin-bottom: 1rem;
+}
+
+.bitacora-item h4 {
+  margin-bottom: 0.2rem;
+}
+
+#listaBitacoras p {
+  margin: 0.3rem 0;
+}
+
+.objetivo-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.btn-eliminar-objetivo {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #d11a2a;
+  padding: 0 6px;
+}

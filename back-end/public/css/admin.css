@@ -1,0 +1,182 @@
+/* admin.css */
+
+/* General */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.header {
+  background-color: #1ab192;
+  color: white;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.titulo {
+  margin: 0;
+  font-size: 24px;
+}
+
+.acciones-superior {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+#logoutBtn {
+  background-color: #888;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#logoutBtn:hover {
+  background-color: #666;
+}
+
+#toggleSidebar{
+  background-color: #1ab192;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-style: solid;
+  border-radius: 1px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+/* Contenedor principal: sidebar + contenido */
+.contenedor-principal {
+  display: flex;
+  flex: 1;
+  height: 100%;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 200px;
+  background-color: #1ab192;
+  color: white;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  font-size: 18px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Añadir esto a tu admin.css */
+.sidebar.oculta {
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+  transition: width 0.3s ease, padding 0.3s ease;
+}
+
+.contenedor-principal.expandido .contenido {
+  width: 100%;
+}
+
+#lista-departamentos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#lista-departamentos li {
+  margin-bottom: 10px;
+}
+
+#lista-departamentos button {
+  width: 100%;
+  background-color: #e0e0e0;
+  color: #333;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#lista-departamentos button:hover {
+  background-color: #cfcfcf;
+}
+
+/* Contenido principal */
+.contenido {
+  flex-grow: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Barra de controles */
+.barra-controles {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.barra-controles button {
+  background-color: #1ab192;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.barra-controles button:hover {
+  background-color: #148c76;
+}
+
+/* Proyectos en vista de tarjeta */
+#proyectosContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Tarjeta de proyecto */
+.proyecto-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+}
+
+.proyecto-card h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.proyecto-card p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.estado {
+  font-weight: bold;
+  color: #1ab192;
+  margin-top: 10px;
+}

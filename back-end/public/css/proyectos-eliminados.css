@@ -1,0 +1,149 @@
+/* proyectos-eliminados.css */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background-color: #1ab192;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.logo-escuela img {
+  max-height: 30px;
+  background-color: white;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+main {
+  flex-grow: 1;
+  display: flex;
+  height: 100%;
+}
+
+.sidebar {
+  width: 220px;
+  background-color: #1ab192;
+  color: white;
+  padding: 20px;
+  transition: transform 0.3s ease;
+}
+
+.sidebar.hidden {
+  transform: translateX(-100%);
+}
+
+.toggle-sidebar {
+  background-color: #1ab192;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-style: solid;
+  border-radius: 1px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  border-radius: 4px;
+}
+
+.sidebar h2 {
+  font-size: 18px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+#lista-departamentos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#lista-departamentos li {
+  margin-bottom: 10px;
+}
+
+#lista-departamentos button {
+  width: 100%;
+  background-color: #495057;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#lista-departamentos button:hover {
+  background-color: #6c757d;
+}
+
+.contenido {
+  flex-grow: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.titulo-eliminados {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+#proyectosEliminadosContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.proyecto-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.proyecto-card h3 {
+  margin: 0 0 5px 0;
+  color: #1ab192;
+}
+
+.proyecto-card p {
+  margin: 2px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.proyecto-card button {
+  background-color: #1ab192;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.proyecto-card button:hover {
+  background-color: #148c75;
+}

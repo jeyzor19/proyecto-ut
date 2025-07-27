@@ -1,0 +1,151 @@
+/* crear-proyecto.css */
+
+/* crear-proyecto.css - Ajuste de márgenes y contenedor centrado */
+
+main {
+  max-width: 1500px;
+  margin: 40px;
+  margin-top: 15px;
+  margin-bottom: 100px;
+  padding: 80px;
+  padding-top: 5%;
+  background-color: white;
+  border-radius: 8px;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Estilo para el logo dentro del header */
+.logo-escuela {
+  background-color: rgb(255, 255, 255); /* Blanco tenue */
+  padding: 5px 10px;
+  border-radius: 6px;
+  max-height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-escuela img {
+  max-height: 30px;
+  width: auto;
+  display: block;
+}
+
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+header {
+  background-color: #1ab192;
+  color: white;
+  max-height: 40px;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.container {
+  max-width: 800px;
+  margin: 30px auto;
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.container h2 {
+  margin-bottom: 20px;
+  color: #1ab192;
+}
+
+form label {
+  display: block;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+form input[type="text"],
+form textarea,
+form select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+#objetivosContainer .objetivo-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+#objetivosContainer input {
+  flex-grow: 1;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #1ab192;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: #178c76;
+}
+
+button.remove {
+  background-color: #dc3545;
+}
+
+button.remove:hover {
+  background-color: #c82333;
+}
+
+.volver {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.volver a {
+  text-decoration: none;
+  color: #1ab192;
+  font-weight: bold;
+}
+
+label[for="departamento"],
+#departamento {
+  display: block;
+  margin-top: 10px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+#departamento {
+  width: 100%;
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}

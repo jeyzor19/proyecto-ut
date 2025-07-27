@@ -1,0 +1,98 @@
+/* bitacoras.css */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background-color: #1ab192;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.logo-escuela img {
+  max-height: 30px;
+  background-color: white;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+.contenido {
+  flex-grow: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.info-proyecto {
+  background-color: #ffffff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.info-proyecto h2 {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  color: #1ab192;
+}
+
+.info-proyecto p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #555;
+}
+
+.bitacoras-listado {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.bitacora-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+}
+
+.bitacora-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: #1ab192;
+}
+
+.bitacora-card p {
+  margin: 0;
+  font-size: 14px;
+  color: #555;
+}
+
+@media (max-width: 600px) {
+  .header h1 {
+    font-size: 18px;
+  }
+
+  .contenido {
+    padding: 15px;
+  }
+
+  .info-proyecto,
+  .bitacora-card {
+    padding: 12px;
+  }
+}
