@@ -180,3 +180,54 @@ body {
   color: #1ab192;
   margin-top: 10px;
 }
+
+.tarjeta-proyecto {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 300px;
+  height: 380px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  overflow: hidden;
+  margin: 10px;
+}
+
+.contenido-proyecto {
+  overflow-y: auto;
+  flex-grow: 1;
+  padding-right: 4px; /* espacio para que no corte texto con scrollbar */
+}
+
+.contenido-proyecto h3 {
+  margin-top: 0;
+}
+
+.acciones-proyecto {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding-top: 10px;
+  border-top: 1px solid #ddd;
+  background-color: #f9f9f9;
+}
+
+.acciones-proyecto button {
+  margin: 2px;
+  padding: 6px 10px;
+  flex: 1 1 calc(50% - 6px);
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  background-color: #1ab192;
+  color: white;
+  transition: background-color 0.2s ease;
+}
+
+.acciones-proyecto button:hover {
+  background-color: #178e78;
+}
