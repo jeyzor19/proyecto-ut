@@ -23,8 +23,19 @@ agregarObjetivoBtn.addEventListener('click', () => {
 });
 
 // Evento Cancelar
+
+//localStorage.setItem('usuario', JSON.stringify(data));
+const data = localStorage.getItem("usuario")
+const user = JSON.parse(data)
+console.log(user)
 cancelarProyecto.addEventListener('click', () => {
-  window.location.href = 'admin.html';
+    if (user.rol === 'Admin') {
+      window.location.href = 'admin.html';
+    } else if (user.rol === 'DepLider') {
+      window.location.href = 'deplider.html';
+    } else {
+      window.location.href = "usuario.html"
+    }
 });
 
 // Evento de envío del formulario
