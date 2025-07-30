@@ -1,5 +1,12 @@
-const { proyecto, objetivo, bitacora, proyectousuario, historial, usuario } = require('../models');
-const { Op } = require('sequelize');
+const {
+  proyecto,
+  objetivo,
+  bitacora,
+  proyectousuario,
+  historial,
+  usuario,
+} = require('../models');
+// const { Op } = require('sequelize');
 
 const crearProyecto = async (req, res) => {
   try {
@@ -11,10 +18,11 @@ const crearProyecto = async (req, res) => {
       objetivos,
       encargados,
       completado,
-      id_departamento
+      id_departamento,
     } = req.body;
 
     // Extraer usuario desde el header
+    // {"id":1,"nombre":"hot","apellidos":"nuts","correo":"hotnuts@uttn.mx","rol":"Usuario","departamentos":[]}
     const usuarioActual = JSON.parse(req.headers['usuario']);
 
     if (!usuarioActual?.id) {
@@ -26,19 +34,25 @@ const crearProyecto = async (req, res) => {
       return res.status(400).json({ mensaje: 'Faltan campos obligatorios.' });
     }
 
-    // Buscar al usuario creador y sus departamentos
+    // Buscar al usuario creador  y sus departamentos
     const creador = await usuario.findByPk(usuarioActual.id, {
-      include: ['departamentos']
+      include: ['departamentos'],
     });
 
     if (!creador || creador.departamentos.length === 0) {
-      return res.status(404).json({ mensaje: 'Usuario o departamentos no encontrados.' });
+      return res
+        .status(404)
+        .json({ mensaje: 'Usuario o departamentos no encontrados.' });
     }
 
     // Verificar que el departamento pertenece al usuario
-    const pertenece = creador.departamentos.some(dep => dep.id === id_departamento);
+    const pertenece = creador.departamentos.some(
+      (dep) => dep.id === id_departamento
+    );
     if (!pertenece) {
-      return res.status(403).json({ mensaje: 'No tienes acceso a este departamento.' });
+      return res
+        .status(403)
+        .json({ mensaje: 'No tienes acceso a este departamento.' });
     }
 
     // Crear el proyecto
@@ -50,7 +64,7 @@ const crearProyecto = async (req, res) => {
       id_creador: usuarioActual.id,
       fecha_creacion: new Date(),
       progreso: completado ? 100 : 0,
-      visible: true
+      visible: true,
     });
 
     // Bitácora inicial
@@ -58,24 +72,24 @@ const crearProyecto = async (req, res) => {
       id_proyecto: nuevoProyecto.id,
       comentario: 'Proyecto creado.',
       fecha: new Date(),
-      titulo: 'Inicio'
+      titulo: 'Inicio',
     });
 
     // Asignar encargados (si los hay)
     if (Array.isArray(encargados) && encargados.length > 0) {
-      const asignaciones = encargados.map(id_usuario_enc => ({
+      const asignaciones = encargados.map((id_usuario_enc) => ({
         id_proyecto: nuevoProyecto.id,
-        id_usuario: id_usuario_enc
+        id_usuario: id_usuario_enc,
       }));
       await proyectousuario.bulkCreate(asignaciones);
     }
 
     // Crear objetivos (si los hay)
     if (tieneObjetivos && Array.isArray(objetivos)) {
-      const listaObjetivos = objetivos.map(obj => ({
+      const listaObjetivos = objetivos.map((obj) => ({
         descripcion: obj.texto,
         completado: obj.cumplido || false,
-        id_proyecto: nuevoProyecto.id
+        id_proyecto: nuevoProyecto.id,
       }));
       await objetivo.bulkCreate(listaObjetivos);
     }
@@ -85,14 +99,13 @@ const crearProyecto = async (req, res) => {
       id_usuario: usuarioActual.id,
       id_proyecto: nuevoProyecto.id,
       accion: 'Creación de proyecto',
-      fecha: new Date()
+      fecha: new Date(),
     });
 
     res.status(201).json({
       mensaje: 'Proyecto creado exitosamente.',
-      id: nuevoProyecto.id
+      id: nuevoProyecto.id,
     });
-
   } catch (error) {
     console.error('Error al crear el proyecto:', error);
     res.status(500).json({ mensaje: 'Error interno del servidor.' });
@@ -100,5 +113,7 @@ const crearProyecto = async (req, res) => {
 };
 
 module.exports = {
-  crearProyecto
+  crearProyecto,
 };
+
+// UPDATE `usuario` SET `id_rol` = '1', WHERE `id` = 11;
