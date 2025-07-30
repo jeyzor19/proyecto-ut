@@ -1,54 +1,60 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="img/svg+xml" href="img/Favicon.svg">
-  <title>Crear Proyecto</title>
-  <link rel="stylesheet" href="css/crear-proyecto.css" />
-</head>
-<body>
-  <header class="header">
-    <h1>Nuevo Proyecto</h1>
-    <div class="logo-escuela">
-      <img src="img/logoescuela.png" alt="Logo UTTN">
-    </div>
-  </header>
-
-  <main class="formulario-contenedor">
-    <form id="formNuevoProyecto">
-      <label for="nombre">Nombre del Proyecto:</label>
-      <input type="text" id="nombre" name="nombre" required />
-
-      <label for="area">Área:</label>
-      <input type="text" id="area" name="area" required />
-
-      <label for="descripcion">Descripción:</label>
-      <textarea id="descripcion" name="descripcion" rows="4" required></textarea>
-
-      <label for="encargados">Encargados:</label>
-      <select id="encargados" name="encargados" multiple required>
-        <!-- Opciones dinámicas -->
-      </select>
-
-      <div id="seccionObjetivos">
-        <label>Objetivos:</label>
-        <button type="button" id="agregarObjetivo">+ Agregar Objetivo</button>
-        <ul id="listaObjetivos">
-          <!-- Objetivos dinámicos -->
-        </ul>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="img/svg+xml" href="img/Favicon.svg" />
+    <title>Crear Proyecto</title>
+    <link rel="stylesheet" href="css/crear-proyecto.css" />
+  </head>
+  <body>
+    <header class="header">
+      <h1>Nuevo Proyecto</h1>
+      <div class="logo-escuela">
+        <img src="img/logoescuela.png" alt="Logo UTTN" />
       </div>
-      <label for="departamento">Departamento:</label>
-      <select id="departamento" name="departamento" required>
-        <!-- Se llenará dinámicamente según los departamentos del usuario -->
-      </select>
-      <div class="acciones-formulario">
-        <button type="submit">Guardar Proyecto</button>
-        <button type="button" id="cancelarProyecto">Cancelar</button>
-      </div>
-    </form>
-  </main>
+    </header>
 
-  <script src="js/crear-proyecto.js"></script>
-</body>
+    <main class="formulario-contenedor">
+      <form id="formCreatePrj">
+        <label for="nombre">Nombre del Proyecto:</label>
+        <input type="text" id="nombre" name="nombre" required />
+
+        <label for="area">Área:</label>
+        <input type="text" id="area" name="area" required />
+
+        <label for="descripcion">Descripción:</label>
+        <textarea
+          id="descripcion"
+          name="descripcion"
+          rows="4"
+          required
+        ></textarea>
+
+        <label for="encargados">Encargados:</label>
+        <select id="encargados" name="encargados" multiple>
+          <!-- Opciones dinámicas -->
+        </select>
+
+        <div id="seccionObjetivos">
+          <label>Objetivos:</label>
+          <button type="button" id="agregarObjetivo">+ Agregar Objetivo</button>
+          <ul id="listaObjetivos">
+            <!-- Objetivos dinámicos -->
+          </ul>
+        </div>
+
+        <label for="departamento">Departamento:</label>
+        <select id="departamento" name="departamento">
+          <!-- Se llenará dinámicamente según los departamentos del usuario -->
+        </select>
+        <div class="acciones-formulario">
+          <button type="submit">Guardar Proyecto</button>
+          <button type="button" id="cancelarProyecto">Cancelar</button>
+        </div>
+      </form>
+    </main>
+
+    <script src="js/crear-proyecto.js"></script>
+  </body>
 </html>

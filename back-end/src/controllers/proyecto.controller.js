@@ -10,7 +10,8 @@ const {
 
 const crearProyecto = async (req, res) => {
   try {
-    const {
+    console.log('body', req.body);
+    /* const {
       nombre,
       descripcion,
       area,
@@ -105,7 +106,9 @@ const crearProyecto = async (req, res) => {
     res.status(201).json({
       mensaje: 'Proyecto creado exitosamente.',
       id: nuevoProyecto.id,
-    });
+    }); */
+
+    res.sendStatus(200);
   } catch (error) {
     console.error('Error al crear el proyecto:', error);
     res.status(500).json({ mensaje: 'Error interno del servidor.' });
