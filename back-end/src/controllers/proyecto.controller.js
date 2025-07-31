@@ -124,8 +124,42 @@ const crearProyecto = async (req, res) => {
   }
 };
 
+const obtenerProyecto = async (req, res) => {
+  try {
+    const { idUsuario } = req.params;
+    const usuario = await usuarioDB.findByPk(idUsuario, {
+      include: ['departamentos'],
+    });
+    const usuarioRol = usuario.id_rol;
+    const usuarioDepartamentos = usuario.departamentos;
+    console.log('idUsuario', idUsuario);
+    console.log('usuario', usuario);
+    console.log('usuarioDepartamentos', usuarioDepartamentos);
+
+    const proyectos = await proyectoDB.findAll();
+    /* let proyectosPorRol;
+    if (usuarioRol === 1) {
+      // admin
+      proyectosPorRol = proyectos;
+    } else if (usuarioRol === 2) {
+      // lider depto
+      proyectosPorRol = proyectos.filter((proy) =>
+        usuarioDepartamentos.inlcudes(proy.id_departamento)
+      );
+    } else if (usuarioRol === 3) {
+      // usuario x
+      proyectosPorRol = proyectos.filter(proy => proy.id_departamento === )
+    } */
+    res.status(200).json(proyectos);
+  } catch (error) {
+    console.error('Error al obtener departamentos:', error);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+};
+
 module.exports = {
   crearProyecto,
+  obtenerProyecto,
 };
 
 // UPDATE `usuario` SET `id_rol` = '1', WHERE `id` = 11;
