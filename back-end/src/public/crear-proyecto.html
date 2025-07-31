@@ -31,6 +31,11 @@
           required
         ></textarea>
 
+        <label for="departamento">Departamento:</label>
+        <select id="departamento" name="departamento">
+          <!-- Se llenará dinámicamente según los departamentos del usuario -->
+        </select>
+
         <label for="encargados">Encargados:</label>
         <select id="encargados" name="encargados" multiple>
           <!-- Opciones dinámicas -->
@@ -44,10 +49,6 @@
           </ul>
         </div>
 
-        <label for="departamento">Departamento:</label>
-        <select id="departamento" name="departamento">
-          <!-- Se llenará dinámicamente según los departamentos del usuario -->
-        </select>
         <div class="acciones-formulario">
           <button type="submit">Guardar Proyecto</button>
           <button type="button" id="cancelarProyecto">Cancelar</button>

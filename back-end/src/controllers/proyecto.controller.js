@@ -23,7 +23,7 @@ const crearProyecto = async (req, res) => {
 
     // Extraer usuario desde el header
     // {"id":1,"nombre":"hot","apellidos":"nuts","correo":"hotnuts@uttn.mx","rol":"Usuario","departamentos":[]}
-    // console.log('req.body : usuario', usuario);
+
     // console.log('req.body : proyecto', proyecto);
 
     if (!usuario && !usuario?.id) {
@@ -32,7 +32,12 @@ const crearProyecto = async (req, res) => {
 
     // Validación de campos requeridos
     // || !usuario.id_departamento;
-    if (!proyecto.nombre || !proyecto.descripcion || !proyecto.area) {
+    if (
+      !proyecto.nombre ||
+      !proyecto.descripcion ||
+      !proyecto.area ||
+      !proyecto.idDepartamento
+    ) {
       return res.status(400).json({ mensaje: 'Faltan campos obligatorios.' });
     }
 
@@ -40,7 +45,7 @@ const crearProyecto = async (req, res) => {
     const creador = await usuarioDB.findByPk(usuario.id, {
       include: ['departamentos'],
     });
-    // console.log('creador', creador);
+    // console.log('creador', JSON.stringify(creador));
 
     if (!creador || creador.departamentos.length === 0) {
       return res
@@ -49,21 +54,21 @@ const crearProyecto = async (req, res) => {
     }
 
     // Verificar que el departamento pertenece al usuario
-    /*  const pertenece = creador.departamentos.some(
-      (dep) => dep.id === id_departamento
+    const perteneceADepto = creador.departamentos.some(
+      (dep) => dep.id === +proyecto.idDepartamento
     );
-    if (!pertenece) {
+    if (!perteneceADepto) {
       return res
         .status(403)
         .json({ mensaje: 'No tienes acceso a este departamento.' });
-    } */
+    }
 
     // Crear el proyecto
     const nuevoProyecto = await proyectoDB.create({
       nombre: proyecto.nombre,
       descripcion: proyecto.descripcion,
       area: proyecto.area,
-      id_departamento: 1,
+      id_departamento: proyecto.idDepartamento,
       id_creador: usuario.id,
       fecha_creacion: new Date(),
       progreso: 0,
@@ -115,7 +120,7 @@ const crearProyecto = async (req, res) => {
     });
   } catch (error) {
     console.error('Error al crear el proyecto:', error);
-    res.status(500).json({ mensaje: 'Error interno del servidor.' });
+    res.status(500).json({ mensaje: `Error interno del servidor. ${error}` });
   }
 };
 

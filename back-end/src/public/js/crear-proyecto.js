@@ -27,16 +27,34 @@ agregarObjetivoBtn.addEventListener('click', () => {
 //localStorage.setItem('usuario', JSON.stringify(data));
 const data = localStorage.getItem('usuario');
 const user = JSON.parse(data);
+console.log('user', user);
 
-cancelarProyecto.addEventListener('click', () => {
-  if (user.rol === 'Admin') {
-    window.location.href = 'admin.html';
-  } else if (user.rol === 'DepLider') {
-    window.location.href = 'deplider.html';
-  } else {
-    window.location.href = 'usuario.html';
+/***************
+ * Obtener Departamentos
+ */
+async function obtenerDepartamentos() {
+  try {
+    const response = await fetch('http://localhost:3000/api/departamentos');
+    if (!response.ok) {
+      console.log('error cargando departamentos');
+      return;
+    }
+
+    const departamentos = await response.json();
+    // console.log('departamentos', departamentos);
+    /* [{ "id": 9, "nombre": "Administración" }] */
+    const selectElement = document.getElementById('departamento');
+    selectElement.innerHTML = `
+      <option value="">Selecciona un departamento</option>
+      ${departamentos
+        .map((d) => `<option value="${d.id}">${d.nombre}</option>`)
+        .join('')}
+    `;
+  } catch (error) {
+    console.log('Error obteniendo los departamentos', error);
   }
-});
+}
+document.addEventListener('DOMContentLoaded', obtenerDepartamentos);
 
 // Evento de envío del formulario
 form.addEventListener('submit', async (e) => {
@@ -48,6 +66,9 @@ form.addEventListener('submit', async (e) => {
   const encargados = Array.from(form.encargados.selectedOptions).map(
     (opt) => opt.value
   );
+  const idDepartamento = form.departamento.value;
+  console.log('idDepartamento', idDepartamento);
+
   const objetivos = Array.from(
     form.querySelectorAll('input[name="objetivos[]"]')
   )
@@ -60,6 +81,7 @@ form.addEventListener('submit', async (e) => {
     descripcion,
     encargados,
     objetivos,
+    idDepartamento,
   };
 
   console.log('Proyecto a guardar:', proyecto);
@@ -83,5 +105,19 @@ form.addEventListener('submit', async (e) => {
     window.location.href = 'admin.html';
   } catch (error) {
     alert(`Error: ${error}`);
+  }
+});
+
+/************
+ **********
+ Cancelar proyecto 
+ */
+cancelarProyecto.addEventListener('click', () => {
+  if (user.rol === 'Admin') {
+    window.location.href = 'admin.html';
+  } else if (user.rol === 'DepLider') {
+    window.location.href = 'deplider.html';
+  } else {
+    window.location.href = 'usuario.html';
   }
 });
