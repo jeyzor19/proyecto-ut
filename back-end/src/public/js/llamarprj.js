@@ -1,9 +1,7 @@
-function mostrarContenido (idUsuario){
-    usuarioActualId = idUsuario;
-}
 
-function mostrarContenido(idUsuario) {
-    fetch(`/api/proyectos/${idUsuario}`)
+
+export default async function mostrarContenido(idUsuario) {
+    await fetch(`/api/proyectos/${idUsuario}`)
         .then(res => res.json())
         .then(proyectos => {
         const container = document.getElementById('proyectosContainer');
@@ -15,8 +13,8 @@ function mostrarContenido(idUsuario) {
             descripcion,
             area,
             completado,
-            usuario, // creador
-            encargados, // array de usuarios
+            usuario, //creador
+            encargados, //usuarios
             objetivos // array de objetivos
             } = proyecto;
 
@@ -63,3 +61,4 @@ function mostrarContenido(idUsuario) {
         console.error('Error al cargar proyectos:', err);
         });
 }
+

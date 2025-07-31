@@ -20,7 +20,7 @@ db.sequelize
   .authenticate()
   .then(() => {
     console.log(' Conexión establecida con la base de datos');
-    return db.sequelize.sync({ alter: true }); // alter actualiza si ya existen
+    return db.sequelize.sync(); // alter actualiza si ya existen
   })
   .then(() => {
     console.log(' Modelos sincronizados correctamente');
