@@ -1,60 +1,73 @@
 
 
 export default async function mostrarProyectos(idUsuario) {
-    
-    const response = await fetch('http://localhost:3000/api/proyectos');
-    if (!response.ok) {
-        console.log('Error cargando proyectos');
+    try {
+    const response = await fetch(
+        `http://localhost:3000/api/proyectos/usuario/${idUsuario}`
+        );
+        if (!response.ok) {
+        console.log('error cargando departamentos');
         return;
-    }
+        }
 
-    const proyectos = await response.json();
+        const proyectos = await response.json();
+        console.log('proyectos', proyectos);
 
-    await fetch(`/api/proyectos/${idUsuario}`)
-        .then(res => res.json())
-        .then(proyectos => {
-        const container = document.getElementById('proyectosContainer');
-        
-
-        container.innerHTML = ''; // Limpiar anteriores
+        // Crear elementos html - Tarjeta - Card
+    
+        const proyectosContainer = document.getElementById('proyectosContainer')
+        proyectosContainer.innerHTML = ''; // Limpiar anteriores
 
         proyectos.forEach(proyecto => {
             const {
             nombre,
             descripcion,
             area,
-            completado,
-            usuario, //creador
-            encargados, //usuarios
-            objetivos // array de objetivos
+            progreso,
+            fecha_creacion,
+            visible,
+             //creador
+            //encargados, //usuarios
+            //objetivos // array de objetivos
             } = proyecto;
-
+            /* 
+            {
+            "id": 1,
+            "nombre": "Proyecto 1",
+            "descripcion": "asdasdasdadads",
+            "progreso": 0,
+            "fecha_creacion": "2025-07-31T06:17:50.000Z",
+            "visible": true,
+            "area": "Area ejemplo",
+            "id_departamento": 1,
+            "id_creador": 1
+            }
+            */
             // Lista de encargados
-            const listaEncargados = encargados.map(enc => `${enc.nombre} ${enc.apellidos}`).join(', ') || 'Sin asignar';
+            //const listaEncargados = encargados.map(enc => `${enc.nombre} ${enc.apellidos}`).join(', ') || 'Sin asignar';
 
             // Lista de objetivos en HTML
-            const listaObjetivos = objetivos.length > 0
+            /*const listaObjetivos = objetivos.length > 0
             ? objetivos.map(obj => `
                 <li>
                     <input type="checkbox" ${obj.cumplido ? 'checked' : ''} disabled>
                     ${obj.texto}
                 </li>
                 `).join('')
-            : '<li>No hay objetivos</li>';
+            : '<li>No hay objetivos</li>';*/
 
             // Crear tarjeta HTML
             const tarjeta = document.createElement('div');
             tarjeta.classList.add('tarjeta-proyecto');
-
+            //<p><strong>Creador:</strong> ${usuario?.nombre || 'Desconocido'} ${usuario?.apellidos || ''}</p>
+            //<p><strong>Encargado(s):</strong> ${listaEncargados}</p>
+            //<p><strong>Objetivos:</strong></p>
+            //<ul>${listaObjetivos}</ul>
             tarjeta.innerHTML = `
             <div class="contenido-proyecto">
                 <h3>${nombre}</h3>
                 <p><strong>Área:</strong> ${area}</p>
                 <p>${descripcion}</p>
-                <p><strong>Creador:</strong> ${usuario?.nombre || 'Desconocido'} ${usuario?.apellidos || ''}</p>
-                <p><strong>Encargado(s):</strong> ${listaEncargados}</p>
-                <p><strong>Objetivos:</strong></p>
-                <ul>${listaObjetivos}</ul>
             </div>
             <div class="acciones-proyecto">
                 <button>Editar</button>
@@ -65,11 +78,9 @@ export default async function mostrarProyectos(idUsuario) {
             </div>
             `;
 
-            container.appendChild(tarjeta);
+            proyectosContainer.appendChild(tarjeta);
         });
-        })
-        .catch(err => {
-        console.error('Error al cargar proyectos:', err);
-        });
+        } catch (error) {
+        console.log('Error obteniendo los departamentos', error);
+    }
 }
-

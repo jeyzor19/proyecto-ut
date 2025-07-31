@@ -137,6 +137,7 @@ const obtenerProyecto = async (req, res) => {
     console.log('usuarioDepartamentos', usuarioDepartamentos);
 
     const proyectos = await proyectoDB.findAll();
+    // TODO: Desarrollar los filtros por rol de usuario
     /* let proyectosPorRol;
     if (usuarioRol === 1) {
       // admin

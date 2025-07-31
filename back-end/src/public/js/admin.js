@@ -1,5 +1,7 @@
 // admin.js
 
+import mostrarProyectos from './obtnrproyectos.js';
+
 const usuario = JSON.parse(localStorage.getItem('usuario'));
 if (!usuario || usuario.rol !== 'Admin') {
   window.location.href = 'login.html';
@@ -72,22 +74,7 @@ async function cargarDepartamentos() {
 
 // ================== Cargar proyectos ==================
 async function cargarProyectosPorRolDeUsuario() {
-  try {
-    const response = await fetch(
-      `http://localhost:3000/api/proyectos/usuario/${usuario.id}`
-    );
-    if (!response.ok) {
-      console.log('error cargando departamentos');
-      return;
-    }
-
-    const proyectos = await response.json();
-    console.log('proyectos', proyectos);
-
-    // Crear elementos html - Tarjeta - Card
-  } catch (error) {
-    console.log('Error obteniendo los departamentos', error);
-  }
+  mostrarProyectos(usuario.id)
 }
 
 async function cargarProyectosPorDepartamento(idDepartamento) {
