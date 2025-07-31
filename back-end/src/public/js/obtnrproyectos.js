@@ -1,10 +1,21 @@
 
 
-export default async function mostrarContenido(idUsuario) {
+export default async function mostrarProyectos(idUsuario) {
+    
+    const response = await fetch('http://localhost:3000/api/proyectos');
+    if (!response.ok) {
+        console.log('Error cargando proyectos');
+        return;
+    }
+
+    const proyectos = await response.json();
+
     await fetch(`/api/proyectos/${idUsuario}`)
         .then(res => res.json())
         .then(proyectos => {
         const container = document.getElementById('proyectosContainer');
+        
+
         container.innerHTML = ''; // Limpiar anteriores
 
         proyectos.forEach(proyecto => {
