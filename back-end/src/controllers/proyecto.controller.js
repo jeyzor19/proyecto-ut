@@ -1,43 +1,51 @@
 const {
-  proyecto,
-  objetivo,
-  bitacora,
-  proyectousuario,
-  historial,
-  usuario,
+  proyecto: proyectoDB,
+  objetivo: objetivoDB,
+  bitacora: bitacoraDB,
+  proyectousuario: proyectousuarioDB,
+  historial: historialDB,
+  usuario: usuarioDB,
 } = require('../models');
 // const { Op } = require('sequelize');
 
 const crearProyecto = async (req, res) => {
   try {
-    const {
-      nombre,
+    /* nombre,
       descripcion,
       area,
-      tieneObjetivos,
+      tieneObjetivos, <== obtener esto de objectivos
       objetivos,
       encargados,
       completado,
       id_departamento,
-    } = req.body;
+        */
+    const { proyecto, usuario } = req.body;
 
     // Extraer usuario desde el header
     // {"id":1,"nombre":"hot","apellidos":"nuts","correo":"hotnuts@uttn.mx","rol":"Usuario","departamentos":[]}
-    const usuarioActual = JSON.parse(req.headers['usuario']);
 
-    if (!usuarioActual?.id) {
-      return res.status(400).json({ mensaje: 'Usuario no autenticado.' });
+    // console.log('req.body : proyecto', proyecto);
+
+    if (!usuario && !usuario?.id) {
+      return res.status(403).json({ mensaje: 'Usuario no autenticado.' });
     }
 
-    // Validación de campos básicos
-    if (!nombre || !descripcion || !area || !id_departamento) {
+    // Validación de campos requeridos
+    // || !usuario.id_departamento;
+    if (
+      !proyecto.nombre ||
+      !proyecto.descripcion ||
+      !proyecto.area ||
+      !proyecto.idDepartamento
+    ) {
       return res.status(400).json({ mensaje: 'Faltan campos obligatorios.' });
     }
 
     // Buscar al usuario creador  y sus departamentos
-    const creador = await usuario.findByPk(usuarioActual.id, {
+    const creador = await usuarioDB.findByPk(usuario.id, {
       include: ['departamentos'],
     });
+    // console.log('creador', JSON.stringify(creador));
 
     if (!creador || creador.departamentos.length === 0) {
       return res
@@ -46,57 +54,61 @@ const crearProyecto = async (req, res) => {
     }
 
     // Verificar que el departamento pertenece al usuario
-    const pertenece = creador.departamentos.some(
-      (dep) => dep.id === id_departamento
+    const perteneceADepto = creador.departamentos.some(
+      (dep) => dep.id === +proyecto.idDepartamento
     );
-    if (!pertenece) {
+    if (!perteneceADepto) {
       return res
         .status(403)
         .json({ mensaje: 'No tienes acceso a este departamento.' });
     }
 
     // Crear el proyecto
-    const nuevoProyecto = await proyecto.create({
-      nombre,
-      descripcion,
-      area,
-      id_departamento,
-      id_creador: usuarioActual.id,
+    const nuevoProyecto = await proyectoDB.create({
+      nombre: proyecto.nombre,
+      descripcion: proyecto.descripcion,
+      area: proyecto.area,
+      id_departamento: proyecto.idDepartamento,
+      id_creador: usuario.id,
       fecha_creacion: new Date(),
-      progreso: completado ? 100 : 0,
+      progreso: 0,
       visible: true,
     });
 
     // Bitácora inicial
-    await bitacora.create({
+    await bitacoraDB.create({
       id_proyecto: nuevoProyecto.id,
-      comentario: 'Proyecto creado.',
+      comentario: 'Inicio.',
       fecha: new Date(),
-      titulo: 'Inicio',
+      titulo: 'Creación de proyecto',
     });
 
     // Asignar encargados (si los hay)
-    if (Array.isArray(encargados) && encargados.length > 0) {
+    if (Array.isArray(proyecto.encargados) && proyecto.encargados.length > 0) {
       const asignaciones = encargados.map((id_usuario_enc) => ({
         id_proyecto: nuevoProyecto.id,
         id_usuario: id_usuario_enc,
       }));
-      await proyectousuario.bulkCreate(asignaciones);
+      await proyectousuarioDB.bulkCreate(asignaciones);
     }
 
     // Crear objetivos (si los hay)
-    if (tieneObjetivos && Array.isArray(objetivos)) {
-      const listaObjetivos = objetivos.map((obj) => ({
+    if (
+      proyecto.objetivos &&
+      proyecto.objetivos.length &&
+      Array.isArray(proyecto.objetivos)
+    ) {
+      const listaObjetivos = proyecto.objetivos.map((obj) => ({
         descripcion: obj.texto,
         completado: obj.cumplido || false,
         id_proyecto: nuevoProyecto.id,
       }));
-      await objetivo.bulkCreate(listaObjetivos);
+      await objetivoDB.bulkCreate(listaObjetivos);
     }
 
     // Registrar en historial
-    await historial.create({
-      id_usuario: usuarioActual.id,
+    await historialDB.create({
+      id_usuario: usuario.id,
       id_proyecto: nuevoProyecto.id,
       accion: 'Creación de proyecto',
       fecha: new Date(),
@@ -108,7 +120,7 @@ const crearProyecto = async (req, res) => {
     });
   } catch (error) {
     console.error('Error al crear el proyecto:', error);
-    res.status(500).json({ mensaje: 'Error interno del servidor.' });
+    res.status(500).json({ mensaje: `Error interno del servidor. ${error}` });
   }
 };
 
