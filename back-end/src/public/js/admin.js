@@ -15,11 +15,11 @@ const btnVerEliminados = document.getElementById('btnVerEliminados');
 
 let vistaCompacta = true;
 
-document.getElementById("toggleSidebar").addEventListener("click", () => {
-  const sidebar = document.querySelector(".sidebar");
-  const contenedor = document.querySelector(".contenedor-principal");
-  sidebar.classList.toggle("oculta");
-  contenedor.classList.toggle("expandido");
+document.getElementById('toggleSidebar').addEventListener('click', () => {
+  const sidebar = document.querySelector('.sidebar');
+  const contenedor = document.querySelector('.contenedor-principal');
+  sidebar.classList.toggle('oculta');
+  contenedor.classList.toggle('expandido');
 });
 
 document.getElementById('btnNuevoProyecto').addEventListener('click', () => {
@@ -31,20 +31,20 @@ document.getElementById('btnVerEliminados').addEventListener('click', () => {
   window.location.href = 'proyectos-eliminados.html';
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-  const logoutBtn = document.getElementById("logoutBtn");
+document.addEventListener('DOMContentLoaded', () => {
+  const logoutBtn = document.getElementById('logoutBtn');
 
   if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      localStorage.removeItem("usuario");
-      window.location.href = "login.html";
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('usuario');
+      window.location.href = 'login.html';
     });
   }
 
   // Solo validamos si hay sesión (sin validar rol)
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
   if (!usuario) {
-    window.location.href = "login.html";
+    window.location.href = 'login.html';
   }
 });
 
@@ -55,12 +55,14 @@ async function cargarDepartamentos() {
     const departamentos = await res.json();
     listaDepartamentos.innerHTML = '';
 
-    departamentos.forEach(dep => {
+    departamentos.forEach((dep) => {
       const boton = document.createElement('button');
       boton.textContent = dep.nombre;
       boton.classList.add('btn-departamento');
       boton.dataset.id = dep.id;
-      boton.addEventListener('click', () => cargarProyectosPorDepartamento(dep.id));
+      boton.addEventListener('click', () =>
+        cargarProyectosPorDepartamento(dep.id)
+      );
       listaDepartamentos.appendChild(boton);
     });
   } catch (error) {
@@ -69,6 +71,25 @@ async function cargarDepartamentos() {
 }
 
 // ================== Cargar proyectos ==================
+async function cargarProyectosPorRolDeUsuario() {
+  try {
+    const response = await fetch(
+      `http://localhost:3000/api/proyectos/${usuario.id}`
+    );
+    if (!response.ok) {
+      console.log('error cargando departamentos');
+      return;
+    }
+
+    const proyectos = await response.json();
+    console.log('proyectos', proyectos);
+
+    // Crear elementos html - Tarjeta - Card
+  } catch (error) {
+    console.log('Error obteniendo los departamentos', error);
+  }
+}
+
 async function cargarProyectosPorDepartamento(idDepartamento) {
   try {
     contenedorProyectos.innerHTML = '';
@@ -88,11 +109,6 @@ btnVista.addEventListener('click', () => {
 
 // ================== Nuevo proyecto ==================
 
-
-
-
-
-
-
 // ================== Inicializar ==================
 cargarDepartamentos();
+cargarProyectosPorRolDeUsuario();
