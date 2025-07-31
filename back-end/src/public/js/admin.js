@@ -74,7 +74,7 @@ async function cargarDepartamentos() {
 async function cargarProyectosPorRolDeUsuario() {
   try {
     const response = await fetch(
-      `http://localhost:3000/api/proyectos/${usuario.id}`
+      `http://localhost:3000/api/proyectos/usuario/${usuario.id}`
     );
     if (!response.ok) {
       console.log('error cargando departamentos');

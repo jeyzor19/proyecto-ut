@@ -4,6 +4,6 @@ const proyectoController = require('../controllers/proyecto.controller');
 
 // Crear proyecto
 router.post('/', proyectoController.crearProyecto);
-router.get('/:idUsuario', proyectoController.obtenerProyecto);
+router.get('/usuario/:idUsuario', proyectoController.obtenerProyecto);
 
 module.exports = router;
