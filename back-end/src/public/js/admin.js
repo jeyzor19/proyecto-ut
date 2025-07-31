@@ -1,5 +1,7 @@
 // admin.js
 
+const { use } = require("react");
+
 const usuario = JSON.parse(localStorage.getItem('usuario'));
 if (!usuario || usuario.rol !== 'Admin') {
   window.location.href = 'login.html';
@@ -21,6 +23,8 @@ document.getElementById("toggleSidebar").addEventListener("click", () => {
   sidebar.classList.toggle("oculta");
   contenedor.classList.toggle("expandido");
 });
+
+use("llamarprj.js")
 
 document.getElementById('btnNuevoProyecto').addEventListener('click', () => {
   window.location.href = 'crear-proyecto.html';
@@ -89,9 +93,7 @@ btnVista.addEventListener('click', () => {
 // ================== Nuevo proyecto ==================
 
 
-
-
-
+import{mostrarContenido} from './llamarprj';
 
 
 // ================== Inicializar ==================
