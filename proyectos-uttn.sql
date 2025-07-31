@@ -15,10 +15,11 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+CREATE DATABASE IF NOT EXISTS mi_basedatos;
+USE mi_basedatos;
 --
 -- Table structure for table `bitacora`
 --
-
 DROP TABLE IF EXISTS `bitacora`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -275,3 +276,60 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2025-07-05  8:31:55
+
+
+-- INSERT Admin user
+INSERT INTO `usuario` (`nombre`, `apellidos`, `correo`, `contrasena`, `id_rol`) VALUES 
+('hot', 'nuts', 'hotnuts@uttn.mx', '$2b$10$zvJq5.dOVrNWcjbEjrkQMedvrLE8iqeD1Tz34Lj8BM5sc8oQItEke', 1); -- Admin
+
+-- Insert sample users into the usuario table - contrasena is password
+INSERT INTO `usuario` (`nombre`, `apellidos`, `correo`, `contrasena`, `id_rol`) VALUES 
+('María Elena', 'Rodríguez Martínez', 'mrodriguez@uttn.mx', '$2b$10$zvJq5.dOVrNWcjbEjrkQMedvrLE8iqeD1Tz34Lj8BM5sc8oQItEke', 2), -- DepLider
+('Carlos Alberto', 'Hernández Silva', 'chernandez@uttn.mx', '$2b$10$zvJq5.dOVrNWcjbEjrkQMedvrLE8iqeD1Tz34Lj8BM5sc8oQItEke', 2), -- DepLider
+('Ana Sofía', 'López Fernández', 'alopez@uttn.mx', '$2b$10$zvJq5.dOVrNWcjbEjrkQMedvrLE8iqeD1Tz34Lj8BM5sc8oQItEke', 3), -- Usuario
+('Roberto Miguel', 'Sánchez Torres', 'rsanchez@uttn.mx', '$2b$10$zvJq5.dOVrNWcjbEjrkQMedvrLE8iqeD1Tz34Lj8BM5sc8oQItEke', 3), -- Usuario
+('Lucía Isabel', 'Morales Vega', 'lmorales@uttn.mx', '$2b$10$zvJq5.dOVrNWcjbEjrkQMedvrLE8iqeD1Tz34Lj8BM5sc8oQItEke', 3), -- Usuario
+('Fernando José', 'Jiménez Ruiz', 'fjimenez@uttn.mx', '$2b$10$zvJq5.dOVrNWcjbEjrkQMedvrLE8iqeD1Tz34Lj8BM5sc8oQItEke', 2), -- DepLider
+('Patricia Carmen', 'Vargas Castillo', 'pvargas@uttn.mx', '$2b$10$zvJq5.dOVrNWcjbEjrkQMedvrLE8iqeD1Tz34Lj8BM5sc8oQItEke', 3), -- Usuario
+('Diego Alejandro', 'Mendoza Pérez', 'dmendoza@uttn.mx', '$2b$10$zvJq5.dOVrNWcjbEjrkQMedvrLE8iqeD1Tz34Lj8BM5sc8oQItEke', 3), -- Usuario
+('Gabriela Alejandra', 'Cruz Ramírez', 'gcruz@uttn.mx', '$2b$10$zvJq5.dOVrNWcjbEjrkQMedvrLE8iqeD1Tz34Lj8BM5sc8oQItEke', 3); -- Usuario
+
+-- Insert relationships between users and departments in usuariodepartamento table
+-- Assuming the users were inserted with auto-increment IDs starting from 1
+
+-- Juan Carlos García (Admin) - belongs to Rectoria
+INSERT INTO `usuariodepartamento` (`id_usuario`, `id_departamento`) VALUES (1, 1);
+
+-- María Elena Rodríguez (DepLider) - belongs to Sistemas y Telecomunicaciones
+INSERT INTO `usuariodepartamento` (`id_usuario`, `id_departamento`) VALUES (2, 5);
+
+-- Carlos Alberto Hernández (DepLider) - belongs to Ingeniería Industrial
+INSERT INTO `usuariodepartamento` (`id_usuario`, `id_departamento`) VALUES (3, 17);
+
+-- Ana Sofía López (Usuario) - belongs to Sistemas y Telecomunicaciones
+INSERT INTO `usuariodepartamento` (`id_usuario`, `id_departamento`) VALUES (4, 5);
+
+-- Roberto Miguel Sánchez (Usuario) - belongs to Administración y Finanzas
+INSERT INTO `usuariodepartamento` (`id_usuario`, `id_departamento`) VALUES (5, 4);
+
+-- Lucía Isabel Morales (Usuario) - belongs to Mecatrónica
+INSERT INTO `usuariodepartamento` (`id_usuario`, `id_departamento`) VALUES (6, 10);
+
+-- Fernando José Jiménez (DepLider) - belongs to Logística
+INSERT INTO `usuariodepartamento` (`id_usuario`, `id_departamento`) VALUES (7, 14);
+
+-- Patricia Carmen Vargas (Usuario) - belongs to Servicios Escolares
+INSERT INTO `usuariodepartamento` (`id_usuario`, `id_departamento`) VALUES (8, 8);
+
+-- Diego Alejandro Mendoza (Usuario) - belongs to Energía y Desarrollo Sostenible
+INSERT INTO `usuariodepartamento` (`id_usuario`, `id_departamento`) VALUES (9, 12);
+
+-- Gabriela Alejandra Cruz (Usuario) - belongs to Tecnologías de la Información
+INSERT INTO `usuariodepartamento` (`id_usuario`, `id_departamento`) VALUES (10, 16);
+
+-- Additional department assignments (some users can belong to multiple departments)
+-- María Elena also supports Tecnologías de la Información
+INSERT INTO `usuariodepartamento` (`id_usuario`, `id_departamento`) VALUES (2, 16);
+
+-- Juan Carlos (Admin) also oversees Planeación y Evaluación
+INSERT INTO `usuariodepartamento` (`id_usuario`, `id_departamento`) VALUES (1, 2);

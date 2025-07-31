@@ -1,8 +1,13 @@
-const { departamento } = require('../models');
+const {
+  usuario: usuarioDB,
+  departamento: departamentoDB,
+} = require('../models');
 
 const obtenerDepartamentos = async (req, res) => {
   try {
-    const departamentos = await departamento.findAll();
+    const departamentos = await departamentoDB.findAll();
+    console.log('departamentos', departamentos);
+    // res.status(200).send({ departamentos });
     res.json(departamentos);
   } catch (error) {
     console.error('Error al obtener departamentos:', error);
@@ -10,28 +15,25 @@ const obtenerDepartamentos = async (req, res) => {
   }
 };
 
-const { usuario } = require('../models');
-
 const obtenerDepartamentosPorUsuario = async (req, res) => {
   try {
     const { id } = req.params;
-    const usuarioBD = await usuario.findByPk(id, {
-      include: ['departamentos']
+    const usuario = await usuarioDB.findByPk(id, {
+      include: ['departamentos'],
     });
 
-    if (!usuarioBD) {
+    if (!usuario) {
       return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
 
-    res.json(usuarioBD.departamentos);
+    res.json(usuario.departamentos);
   } catch (error) {
     console.error('Error al obtener departamentos por usuario:', error);
     res.status(500).json({ mensaje: 'Error interno del servidor' });
   }
 };
 
-
 module.exports = {
   obtenerDepartamentos,
-  obtenerDepartamentosPorUsuario
+  obtenerDepartamentosPorUsuario,
 };

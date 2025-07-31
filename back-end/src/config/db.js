@@ -1,7 +1,7 @@
 // config/db.js
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize('mi_basededatos', 'root', 'contasena', {
+const sequelize = new Sequelize('mi_basedatos', 'root', 'admin123', {
   host: 'localhost',
   dialect: 'mysql',
   logging: false,

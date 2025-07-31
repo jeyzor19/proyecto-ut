@@ -12,7 +12,7 @@ const proyectoRoutes = require('./proyecto.routes');
 router.use('/api', authRoutes);
 router.use('/api/usuarios', usuarioRoutes);
 router.use('/api/roles', rolRoutes);
-router.use('/api/departamentos', require('./departamento.routes'));
+router.use('/api/departamentos', departamentoRoutes);
 router.use('/api/proyectos', proyectoRoutes);
 
 module.exports = router;
