@@ -36,10 +36,13 @@
           <!-- Se llenará dinámicamente según los departamentos del usuario -->
         </select>
 
+        <br />
         <label for="encargados">Encargados:</label>
-        <select id="encargados" name="encargados" multiple>
-          <!-- Opciones dinámicas -->
-        </select>
+        <div id="encargados" class="encargados">
+          <div class="empty-state">
+            Selecciona un departamento para ver los encargados
+          </div>
+        </div>
 
         <div id="seccionObjetivos">
           <label>Objetivos:</label>

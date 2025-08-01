@@ -54,7 +54,71 @@ async function obtenerDepartamentos() {
     console.log('Error obteniendo los departamentos', error);
   }
 }
-document.addEventListener('DOMContentLoaded', obtenerDepartamentos);
+
+async function obtenerEncargadosPorDepartamento(idDepartamento) {
+  try {
+    const containerEncargados = document.getElementById('encargados');
+
+    if (!idDepartamento) {
+      containerEncargados.innerHTML =
+        '<div class="empty-state">Selecciona un departamento para ver los encargados</div>';
+      return;
+    }
+
+    try {
+      containerEncargados.innerHTML =
+        '<div class="loading-encargados">Cargando encargados...</div>';
+
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
+      const response = await fetch(
+        `http://localhost:3000/api/usuarios/departamentos/${idDepartamento}`
+      );
+      if (!response.ok) {
+        console.log('error cargando encargados');
+        return;
+      }
+      const data = await response.json();
+      console.log('data', data);
+
+      if (data.encargados.length === 0) {
+        containerEncargados.innerHTML =
+          '<div class="empty-state">No hay encargados disponibles para este departamento</div>';
+        return;
+      }
+
+      // Create checkboxes for each encargado
+      containerEncargados.innerHTML = data.encargados
+        .map(
+          (encargado) => `
+            <div class="encargados-item">
+              <input type="checkbox" 
+                id="encargado_${encargado.id}" 
+                name="encargados" 
+                value="${encargado.id}">
+              <label for="encargado_${encargado.id}">${encargado.nombre}</label>
+            </div>
+          `
+        )
+        .join('');
+    } catch (error) {
+      console.log(error);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  obtenerDepartamentos();
+
+  const departamentoSelect = document.getElementById('departamento');
+  departamentoSelect.addEventListener('change', function () {
+    const selectedDepartamento = this.value;
+    console.log('selectedDepartamento', selectedDepartamento);
+    obtenerEncargadosPorDepartamento(selectedDepartamento);
+  });
+});
 
 // Evento de envío del formulario
 form.addEventListener('submit', async (e) => {
@@ -63,11 +127,12 @@ form.addEventListener('submit', async (e) => {
   const nombre = form.nombre.value.trim();
   const area = form.area.value.trim();
   const descripcion = form.descripcion.value.trim();
-  const encargados = Array.from(form.encargados.selectedOptions).map(
-    (opt) => opt.value
-  );
   const idDepartamento = form.departamento.value;
-  console.log('idDepartamento', idDepartamento);
+  const encargados = Array.from(
+    form.querySelectorAll('input[name="encargados"]:checked')
+  ).map((checkbox) => checkbox.value);
+
+  console.log('encargados', encargados);
 
   const objetivos = Array.from(
     form.querySelectorAll('input[name="objetivos[]"]')

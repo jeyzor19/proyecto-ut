@@ -85,9 +85,9 @@ const crearProyecto = async (req, res) => {
 
     // Asignar encargados (si los hay)
     if (Array.isArray(proyecto.encargados) && proyecto.encargados.length > 0) {
-      const asignaciones = encargados.map((id_usuario_enc) => ({
+      const asignaciones = proyecto.encargados.map((id_usuario_enc) => ({
         id_proyecto: nuevoProyecto.id,
-        id_usuario: id_usuario_enc,
+        id_usuario: +id_usuario_enc,
       }));
       await proyectousuarioDB.bulkCreate(asignaciones);
     }
