@@ -10,6 +10,12 @@ body {
   flex-direction: column;
 }
 
+.tarjeta-proyecto .fecha {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 6px;
+}
+
 /* Header */
 .header {
   background-color: #1ab192;

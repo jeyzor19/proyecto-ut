@@ -127,36 +127,69 @@ const crearProyecto = async (req, res) => {
 const obtenerProyecto = async (req, res) => {
   try {
     const { idUsuario } = req.params;
+
+    // Obtener usuario con sus departamentos
     const usuario = await usuarioDB.findByPk(idUsuario, {
       include: ['departamentos'],
     });
-    const usuarioRol = usuario.id_rol;
-    const usuarioDepartamentos = usuario.departamentos;
-    console.log('idUsuario', idUsuario);
-    console.log('usuario', usuario);
-    console.log('usuarioDepartamentos', usuarioDepartamentos);
 
-    const proyectos = await proyectoDB.findAll();
-    // TODO: Desarrollar los filtros por rol de usuario
-    /* let proyectosPorRol;
+    if (!usuario) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+
+    const usuarioRol = usuario.id_rol;
+    const usuarioDepartamentos = usuario.departamentos.map(dep => dep.id);
+
+    // 🐛 Consolas útiles para depuración
+    console.log('idUsuario:', idUsuario);
+    console.log('usuario:', usuario.toJSON?.() || usuario);
+    console.log('usuarioDepartamentos:', usuarioDepartamentos);
+
+    let proyectos = [];
+
     if (usuarioRol === 1) {
-      // admin
-      proyectosPorRol = proyectos;
+      // 🟢 Admin: todos los proyectos
+      proyectos = await proyectoDB.findAll();
     } else if (usuarioRol === 2) {
-      // lider depto
-      proyectosPorRol = proyectos.filter((proy) =>
-        usuarioDepartamentos.inlcudes(proy.id_departamento)
-      );
+      // 🔵 DepLider: proyectos de los departamentos del usuario
+      proyectos = await proyectoDB.findAll({
+        where: {
+          id_departamento: usuarioDepartamentos
+        }
+      });
     } else if (usuarioRol === 3) {
-      // usuario x
-      proyectosPorRol = proyectos.filter(proy => proy.id_departamento === )
-    } */
+      // 🟠 Usuario: proyectos que creó o donde está asignado como encargado
+      const proyectosComoEncargado = await proyectoDB.findAll({
+        include: [{
+          model: usuarioDB,
+          as: 'encargados',
+          where: { id: idUsuario },
+          attributes: [],
+          through: { attributes: [] }
+        }]
+      });
+
+      const proyectosCreados = await proyectoDB.findAll({
+        where: {
+          id_creador: idUsuario
+        }
+      });
+
+      // Unificar sin duplicar
+      const mapa = new Map();
+      [...proyectosCreados, ...proyectosComoEncargado].forEach(p => {
+        mapa.set(p.id, p);
+      });
+      proyectos = Array.from(mapa.values());
+    }
+
     res.status(200).json(proyectos);
   } catch (error) {
-    console.error('Error al obtener departamentos:', error);
+    console.error('Error al obtener proyectos:', error);
     res.status(500).json({ mensaje: 'Error interno del servidor' });
   }
 };
+
 
 module.exports = {
   crearProyecto,

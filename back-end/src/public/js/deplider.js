@@ -1,4 +1,6 @@
 // deplider.js
+import mostrarProyectos from './obtnrproyectos.js';
+
 
 // ================== Validar sesión ==================
 const usuario = JSON.parse(localStorage.getItem('usuario'));
@@ -65,14 +67,20 @@ async function cargarDepartamentos() {
 }
 
 // ================== Cargar proyectos ==================
+async function cargarProyectosPorRolDeUsuario() {
+  mostrarProyectos(usuario.id)
+}
+
 async function cargarProyectosPorDepartamento(idDepartamento) {
   try {
     contenedorProyectos.innerHTML = '';
+    // Aquí se hará el fetch real al backend más adelante
     console.log(`Cargar proyectos del departamento ${idDepartamento}`);
   } catch (error) {
     console.error('Error al cargar proyectos:', error);
   }
 }
+
 
 // ================== Cambiar vista ==================
 btnCambiarVista.addEventListener('click', () => {
@@ -88,3 +96,4 @@ btnVerEliminados.addEventListener('click', () => {
 
 // ================== Inicializar ==================
 cargarDepartamentos();
+cargarProyectosPorRolDeUsuario();

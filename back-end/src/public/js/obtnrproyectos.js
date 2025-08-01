@@ -55,6 +55,12 @@ export default async function mostrarProyectos(idUsuario) {
                 </li>
                 `).join('')
             : '<li>No hay objetivos</li>';*/
+            
+            const fecha = new Date(fecha_creacion).toLocaleDateString('es-MX', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+            });
 
             // Crear tarjeta HTML
             const tarjeta = document.createElement('div');
@@ -66,6 +72,7 @@ export default async function mostrarProyectos(idUsuario) {
             tarjeta.innerHTML = `
             <div class="contenido-proyecto">
                 <h3>${nombre}</h3>
+                <p class="fecha"><strong>Creado:</strong> ${fecha}</p>
                 <p><strong>Área:</strong> ${area}</p>
                 <p>${descripcion}</p>
             </div>
