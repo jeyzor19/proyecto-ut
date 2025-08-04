@@ -34,7 +34,6 @@ main {
   display: block;
 }
 
-
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -79,7 +78,7 @@ form label {
   font-weight: bold;
 }
 
-form input[type="text"],
+form input[type='text'],
 form textarea,
 form select {
   width: 100%;
@@ -135,7 +134,7 @@ button.remove:hover {
   font-weight: bold;
 }
 
-label[for="departamento"],
+label[for='departamento'],
 #departamento {
   display: block;
   margin-top: 10px;
@@ -148,4 +147,36 @@ label[for="departamento"],
   padding: 6px;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+
+div.encargados {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+div.encargados > .empty-state {
+  color: #242b2a;
+  margin: 10px 0;
+}
+
+div.encargados > .encargados-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 15px 0;
+}
+
+div.encargados > .encargados-item input[type='checkbox'] {
+  margin: 0;
+  padding: 0;
+}
+div.encargados > .encargados-item label {
+  color: #242b2a;
+  font-size: 14px;
+  font-weight: 100;
+  line-height: 1;
+  margin: 0;
+  padding: 0;
 }

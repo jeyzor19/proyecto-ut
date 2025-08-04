@@ -6,22 +6,6 @@ const objetivosContainer = document.getElementById('objetivosContainer');
 const agregarObjetivoBtn = document.getElementById('agregarObjetivo');
 const cancelarProyecto = document.getElementById('cancelarProyecto');
 
-// Agregar un nuevo objetivo
-agregarObjetivoBtn.addEventListener('click', () => {
-  const div = document.createElement('div');
-  div.classList.add('objetivo-item');
-  div.innerHTML = `
-    <input type="text" name="objetivos[]" placeholder="Objetivo" required>
-    <button type="button" class="eliminarObjetivo">✖</button>
-  `;
-  objetivosContainer.appendChild(div);
-
-  // Evento para eliminar objetivo
-  div.querySelector('.eliminarObjetivo').addEventListener('click', () => {
-    div.remove();
-  });
-});
-
 // Evento Cancelar
 
 //localStorage.setItem('usuario', JSON.stringify(data));
@@ -54,7 +38,172 @@ async function obtenerDepartamentos() {
     console.log('Error obteniendo los departamentos', error);
   }
 }
-document.addEventListener('DOMContentLoaded', obtenerDepartamentos);
+
+async function obtenerEncargadosPorDepartamento(idDepartamento) {
+  try {
+    const containerEncargados = document.getElementById('encargados');
+
+    if (!idDepartamento) {
+      containerEncargados.innerHTML =
+        '<div class="empty-state">Selecciona un departamento para ver los encargados</div>';
+      return;
+    }
+
+    try {
+      containerEncargados.innerHTML =
+        '<div class="loading-encargados">Cargando encargados...</div>';
+
+      await new Promise((resolve) => setTimeout(resolve, 800));
+
+      const response = await fetch(
+        `http://localhost:3000/api/usuarios/departamentos/${idDepartamento}`
+      );
+      if (!response.ok) {
+        console.log('error cargando encargados');
+        return;
+      }
+      const data = await response.json();
+      console.log('data', data);
+
+      if (data.encargados.length === 0) {
+        containerEncargados.innerHTML =
+          '<div class="empty-state">No hay encargados disponibles para este departamento</div>';
+        return;
+      }
+
+      // Create checkboxes for each encargado
+      containerEncargados.innerHTML = data.encargados
+        .map(
+          (encargado) => `
+            <div class="encargados-item">
+              <input type="checkbox" 
+                id="encargado_${encargado.id}" 
+                name="encargados" 
+                value="${encargado.id}">
+              <label for="encargado_${encargado.id}">${encargado.nombre}</label>
+            </div>
+          `
+        )
+        .join('');
+    } catch (error) {
+      console.log(error);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const objetivosInfo = []; // {id, text: objetivo}
+let objetivoCounter = 0; // usado para manejar los indices de objetivosInfo
+function crearObjetivos() {
+  const botonAgregar = document.getElementById('agregarObjetivo');
+  const listaObjetivos = document.getElementById('listaObjetivos');
+  const nuevoObjetivo = document.getElementById('objetivo-nuevo');
+  let textareaOpened = false;
+
+  // Mostrar text area
+  botonAgregar.addEventListener('click', function () {
+    console.log('crear textarea');
+    textareaOpened = true;
+
+    if (textareaOpened) {
+      // crear text area
+      const textarea = document.createElement('textarea');
+      textarea.className = 'objetivo-input';
+      textarea.placeholder = 'Escribe tu objetivo aquí...';
+      textarea.id = `objetivo-${textareaOpened}`;
+
+      // crear botones de acción
+      const divAcciones = document.createElement('div');
+      divAcciones.className = 'objetivo-actions';
+
+      const botonGuardar = document.createElement('button');
+      botonGuardar.textContent = 'Guardar';
+      botonGuardar.className = 'guardar-btn';
+      botonGuardar.type = 'button';
+
+      // CANCELAR
+      const botonCancelar = document.createElement('button');
+      botonCancelar.type = 'button';
+      botonCancelar.textContent = 'Cancelar';
+      botonCancelar.className = 'cancelar-btn';
+      botonCancelar.addEventListener('click', () => {
+        nuevoObjetivo.replaceChildren();
+        textareaOpened = false;
+      });
+      // Agregar elementos al div de acciones
+      divAcciones.appendChild(botonGuardar);
+      divAcciones.appendChild(botonCancelar);
+
+      // Agregar textarea y botones a div
+      nuevoObjetivo.appendChild(textarea);
+      nuevoObjetivo.appendChild(divAcciones);
+      // Enfocar el textarea
+      textarea.focus();
+
+      // GUARDAR
+      // Crear elemento LI con boton para elimnar objetivo
+      botonGuardar.addEventListener('click', () => {
+        const textoObjetivo = textarea.value.trim();
+
+        if (!textoObjetivo.length) {
+          alert('Agrega un objetivo antes de guardar.');
+          return;
+        }
+        const objetivoId = objetivoCounter++;
+        objetivosInfo.push({ id: objetivoId, texto: textoObjetivo });
+
+        // crear li para agregar a la lista
+        const objetivoLi = document.createElement('li');
+        objetivoLi.textContent = textoObjetivo;
+
+        // agreagr botón de eliminar objetivo
+        const eliminarObjBoton = document.createElement('button');
+        eliminarObjBoton.type = 'button';
+        eliminarObjBoton.className = 'eliminar-obj-btn';
+        eliminarObjBoton.textContent = '❌';
+
+        eliminarObjBoton.addEventListener('click', () => {
+          const objetivoEnLiIndex = objetivosInfo.findIndex(
+            (obj) => obj.id === objetivoId
+          );
+          console.log('index eliminar', objetivoEnLiIndex);
+
+          if (objetivoEnLiIndex > -1) {
+            objetivosInfo.splice(objetivoEnLiIndex, 1);
+            objetivoLi.remove();
+            console.log(objetivosInfo);
+          }
+        });
+
+        objetivoLi.appendChild(eliminarObjBoton);
+        listaObjetivos.appendChild(objetivoLi);
+
+        // Limpiar textarea y cerrar textarea
+        textarea.value = '';
+        nuevoObjetivo.replaceChildren();
+        textareaOpened = false;
+        console.log('objetivosInfo', objetivosInfo);
+      });
+
+      console.log('objetivosInfo', objetivosInfo);
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  obtenerDepartamentos();
+
+  const departamentoSelect = document.getElementById('departamento');
+  departamentoSelect.addEventListener('change', function () {
+    const selectedDepartamento = this.value;
+    console.log('selectedDepartamento', selectedDepartamento);
+    obtenerEncargadosPorDepartamento(selectedDepartamento);
+  });
+
+  // Objetivos
+  crearObjetivos();
+});
 
 // Evento de envío del formulario
 form.addEventListener('submit', async (e) => {
@@ -63,16 +212,13 @@ form.addEventListener('submit', async (e) => {
   const nombre = form.nombre.value.trim();
   const area = form.area.value.trim();
   const descripcion = form.descripcion.value.trim();
-  const encargados = Array.from(form.encargados.selectedOptions).map(
-    (opt) => opt.value
-  );
   const idDepartamento = form.departamento.value;
-  console.log('idDepartamento', idDepartamento);
+  const encargados = Array.from(
+    form.querySelectorAll('input[name="encargados"]:checked')
+  ).map((checkbox) => checkbox.value);
 
-  const objetivos = Array.from(
-    form.querySelectorAll('input[name="objetivos[]"]')
-  )
-    .map((input) => input.value.trim())
+  const objetivos = objetivosInfo
+    .map((obj) => obj.texto.trim())
     .filter((txt) => txt.length > 0);
 
   const proyecto = {

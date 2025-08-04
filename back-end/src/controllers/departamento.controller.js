@@ -6,7 +6,7 @@ const {
 const obtenerDepartamentos = async (req, res) => {
   try {
     const departamentos = await departamentoDB.findAll();
-    console.log('departamentos', departamentos);
+    // console.log('departamentos', departamentos);
     // res.status(200).send({ departamentos });
     res.json(departamentos);
   } catch (error) {
