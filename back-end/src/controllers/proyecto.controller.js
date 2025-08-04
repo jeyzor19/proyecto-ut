@@ -98,11 +98,13 @@ const crearProyecto = async (req, res) => {
       proyecto.objetivos.length &&
       Array.isArray(proyecto.objetivos)
     ) {
+      // console.log('proyecto.objetivos', proyecto.objetivos);
       const listaObjetivos = proyecto.objetivos.map((obj) => ({
-        descripcion: obj.texto,
-        completado: obj.cumplido || false,
+        descripcion: obj,
+        completado: false,
         id_proyecto: nuevoProyecto.id,
       }));
+      // console.log('listaObjetivos', listaObjetivos);
       await objetivoDB.bulkCreate(listaObjetivos);
     }
 
@@ -132,9 +134,6 @@ const obtenerProyecto = async (req, res) => {
     });
     const usuarioRol = usuario.id_rol;
     const usuarioDepartamentos = usuario.departamentos;
-    console.log('idUsuario', idUsuario);
-    console.log('usuario', usuario);
-    console.log('usuarioDepartamentos', usuarioDepartamentos);
 
     const proyectos = await proyectoDB.findAll();
     // TODO: Desarrollar los filtros por rol de usuario
