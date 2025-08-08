@@ -38,9 +38,9 @@ body {
 }
 
 #logoutBtn {
-  background-color: #888;
+  background-color: #296b3f;
   color: white;
-  border: none;
+  border: 1px solid white; /* 👈 Borde blanco delgado */
   padding: 8px 14px;
   border-radius: 4px;
   cursor: pointer;
@@ -48,20 +48,25 @@ body {
 }
 
 #logoutBtn:hover {
-  background-color: #666;
+  background-color: #112c1a;
 }
 
-#toggleSidebar{
-  background-color: #1ab192;
+#toggleSidebar {
+  background-color: #296b3f;            /* Igual que logout */
   color: white;
-  border: none;
-  padding: 10px 20px;
-  border-style: solid;
-  border-radius: 1px;
+  border: 1px solid white;              /* Borde blanco delgado */
+  padding: 10px 20px;                   /* Conserva tamaño */
+  border-radius: 4px;
   cursor: pointer;
   margin-bottom: 10px;
-  border-radius: 4px;
+  transition: background-color 0.2s ease;
 }
+
+#toggleSidebar:hover {
+  background-color: #112c1a;            /* Igual al hover de logout */
+  border: 1px solid white;
+}
+
 
 /* Contenedor principal: sidebar + contenido */
 .contenedor-principal {
@@ -157,6 +162,7 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  justify-content: center;
 }
 
 /* Tarjeta de proyecto */
@@ -236,4 +242,37 @@ body {
 
 .acciones-proyecto button:hover {
   background-color: #178e78;
+}
+
+.tarjeta-proyecto ul {
+  padding-left: 1.2rem;
+  margin: 0.5rem 0;
+}
+
+.tarjeta-proyecto li {
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+.barra-progreso {
+  width: 100%;
+  height: 10px;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.progreso-interno {
+  height: 100%;
+  background-color: #1ab192; /* Color institucional verde */
+  transition: width 0.3s ease;
+}
+
+.descripcion {
+  max-height: 100px;         /* o el valor que consideres adecuado */
+  overflow-y: auto;          /* solo scroll vertical */
+  overflow-x: hidden;        /* evita scroll horizontal */
+  white-space: normal;       /* permite saltos de línea */
+  word-wrap: break-word;     /* fuerza corte de palabra si es muy larga */
 }

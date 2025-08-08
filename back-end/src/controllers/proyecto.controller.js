@@ -144,17 +144,23 @@ const obtenerProyecto = async (req, res) => {
 
     let proyectos = [];
 
-    const includeObjetivos = [
+    const includeObjetivosYEncargados = [
       {
         model: objetivoDB,
         as: 'objetivos',
         attributes: ['id', 'descripcion', 'completado']
+      },
+      {
+        model: usuarioDB,
+        as: 'encargados',
+        attributes: ['id', 'nombre', 'apellidos'],
+        through: { attributes: [] }
       }
     ];
 
     if (usuarioRol === 1) {
       // 🟢 Admin: todos los proyectos
-      proyectos = await proyectoDB.findAll({ where: { visible: true }, include: includeObjetivos });
+      proyectos = await proyectoDB.findAll({ where: { visible: true }, include: includeObjetivosYEncargados });
 
     } else if (usuarioRol === 2) {
       // 🔵 DepLider: proyectos de los departamentos del usuario
@@ -162,7 +168,7 @@ const obtenerProyecto = async (req, res) => {
         where: {
           id_departamento: usuarioDepartamentos, visible: true
         },
-        include: includeObjetivos
+        include: includeObjetivosYEncargados
       });
 
     } else if (usuarioRol === 3) {
@@ -171,28 +177,32 @@ const obtenerProyecto = async (req, res) => {
       const proyectosComoEncargado = await proyectoDB.findAll({
         where: { visible: true },
         include: [
-          includeObjetivos,
+          ...includeObjetivosYEncargados,
           {
             model: usuarioDB,
             as: 'encargados',
-            where: { id: idUsuario },
-            attributes: [],
+            attributes: ['id', 'nombre', 'apellidos'], // ✅ Ahora se incluyen todos
             through: { attributes: [] }
           }
         ]
       });
+
+      // Filtrar solo aquellos donde el usuario está asignado
+      const filtrados = proyectosComoEncargado.filter(p =>
+        p.encargados.some(e => e.id === +idUsuario)
+      );
 
       const proyectosCreados = await proyectoDB.findAll({
         where: {
           id_creador: idUsuario,
           visible: true
         },
-        include: includeObjetivos
+        include: includeObjetivosYEncargados
       });
 
-      // Unificar sin duplicar
+      // Unificar sin duplicados
       const mapa = new Map();
-      [...proyectosCreados, ...proyectosComoEncargado].forEach(p => {
+      [...proyectosCreados, ...filtrados].forEach(p => {
         mapa.set(p.id, p);
       });
       proyectos = Array.from(mapa.values());
