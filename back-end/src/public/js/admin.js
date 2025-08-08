@@ -1,6 +1,6 @@
 // admin.js
 
-import {llenarSidebarDepartamentos} from './obtnrproyectos.js';
+import {llenarSidebarDepartamentos } from './obtnrproyectos.js';
 
 const usuario = JSON.parse(localStorage.getItem('usuario'));
 if (!usuario || usuario.rol !== 'Admin') {

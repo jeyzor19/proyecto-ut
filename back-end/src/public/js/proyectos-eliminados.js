@@ -1,88 +1,157 @@
-// proyectos-eliminados.js
+// === Llenar sidebar con departamentos del usuario ===
 
-document.addEventListener('DOMContentLoaded', () => {
-  const listaDepartamentos = document.getElementById('lista-departamentos');
-  const proyectosEliminadosContainer = document.getElementById('proyectosEliminadosContainer');
+async function llenarSidebarDepartamentos() {
+  const lista = document.getElementById('lista-departamentos');
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
 
 
-  const toggleBtn = document.getElementById('toggle-sidebar');
-  const sidebar = document.querySelector('.sidebar');
-
-  toggleBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('hidden');
+  // Agregar botón "Todos"
+  const btnTodos = document.createElement('button');
+  btnTodos.classList.add('dep-btn', 'selected');
+  btnTodos.textContent = 'Todos';
+  btnTodos.addEventListener('click', () => {
+    document.querySelectorAll('.dep-btn').forEach(b => b.classList.remove('selected'));
+    btnTodos.classList.add('selected');
+    filtrarProyectosEliminadosPorDepartamento(); // todos
   });
+  lista.appendChild(btnTodos);
 
+  try {
+    const res = await fetch(`/api/departamentos/usuario/${usuario.id}`);
+    const departamentos = await res.json();
 
-  // Simular carga de departamentos (se reemplazará con fetch más adelante)
-  /*const departamentos = [
-    { id: 1, nombre: 'Sistemas' },
-    { id: 2, nombre: 'Administración' },
-    { id: 3, nombre: 'Contabilidad' },
-  ];*/
+    departamentos.forEach(dep => {
+      const btn = document.createElement('button');
+      btn.classList.add('dep-btn');
+      btn.textContent = dep.nombre;
+      btn.dataset.id = dep.id;
 
-  departamentos.forEach(dep => {
-    const li = document.createElement('li');
-    const btn = document.createElement('button');
-    btn.textContent = dep.nombre;
-    btn.addEventListener('click', () => cargarProyectosEliminados(dep.id));
-    li.appendChild(btn);
-    listaDepartamentos.appendChild(li);
-  });
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.dep-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        filtrarProyectosEliminadosPorDepartamento(dep.id);
+      });
 
-  function cargarProyectosEliminados(departamentoId) {
-    // Simular proyectos eliminados (más adelante se usará fetch)
-    /*const proyectos = [
-      {
-        id: 101,
-        nombre: 'Proyecto X',
-        area: 'Sistemas',
-        descripcion: 'Reactivación de servidor.',
-        estado: 'Cancelado',
-        departamentoId: 1,
-      },
-      {
-        id: 102,
-        nombre: 'Revisión Presupuesto',
-        area: 'Administración',
-        descripcion: 'Análisis de costos anuales.',
-        estado: 'Cancelado',
-        departamentoId: 2,
-      },
-    ];*/
+      lista.appendChild(btn);
+    });
+  } catch (error) {
+    console.error('Error al cargar departamentos:', error);
+  }
+}
 
-    proyectosEliminadosContainer.innerHTML = '';
+// === Cargar todos los proyectos eliminados al inicio ===
+async function filtrarProyectosEliminadosPorDepartamento(idDepartamento = null) {
+  const container = document.getElementById('proyectosEliminadosContainer');
+  container.innerHTML = '';
 
-    const filtrados = proyectos.filter(p => p.departamentoId === departamentoId);
+  try {
+    const response = await fetch('/api/proyectos/eliminados');
+    const proyectos = await response.json();
+
+    const filtrados = idDepartamento
+      ? proyectos.filter(p => p.id_departamento == idDepartamento)
+      : proyectos;
 
     if (filtrados.length === 0) {
-      proyectosEliminadosContainer.innerHTML = '<p>No hay proyectos eliminados en este departamento.</p>';
+      container.innerHTML = '<p>No hay proyectos eliminados para este departamento.</p>';
       return;
     }
 
-    filtrados.forEach(proy => {
-      const card = document.createElement('div');
-      card.classList.add('proyecto-card');
+    renderizarProyectosEliminados(filtrados);
+  } catch (err) {
+    console.error('Error al filtrar proyectos eliminados:', err);
+    container.innerHTML = '<p>Error al cargar los proyectos eliminados.</p>';
+  }
+}
 
-      const nombre = document.createElement('h3');
-      nombre.textContent = proy.nombre;
-      const descripcion = document.createElement('p');
-      descripcion.textContent = proy.descripcion;
-      const estado = document.createElement('p');
-      estado.textContent = `Estado: ${proy.estado}`;
-      estado.classList.add('estado');
+// === Renderizar tarjetas de proyectos eliminados ===
+function renderizarProyectosEliminados(proyectos) {
+  const container = document.getElementById('proyectosEliminadosContainer');
+  container.innerHTML = '';
 
-      const btnRestaurar = document.createElement('button');
-      btnRestaurar.textContent = 'Restaurar';
-      btnRestaurar.addEventListener('click', () => {
-        alert(`Proyecto restaurado: ${proy.nombre}`);
-        // Aquí irá la lógica real con fetch
-      });
+  proyectos.forEach(proyecto => {
+    const tarjeta = document.createElement('div');
+    tarjeta.classList.add('tarjeta-proyecto');
 
-      card.append(nombre, descripcion, estado, btnRestaurar);
-      proyectosEliminadosContainer.appendChild(card);
+    tarjeta.innerHTML = `
+      <div class="contenido-proyecto">
+        <h3>${proyecto.nombre}</h3>
+        <p><strong>Área:</strong> ${proyecto.area}</p>
+        <p><strong>Descripción:</strong> ${proyecto.descripcion}</p>
+        <p><strong>Fecha:</strong> ${new Date(proyecto.fecha_creacion).toLocaleDateString('es-MX')}</p>
+      </div>
+      <div class="acciones-proyecto">
+        <button class="btn-reactivar" data-id="${proyecto.id}">Reactivar</button>
+      </div>
+    `;
+
+    container.appendChild(tarjeta);
+  });
+
+  document.querySelectorAll('.btn-reactivar').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+      const id = e.target.dataset.id;
+      const confirmar = confirm('¿Deseas reactivar este proyecto?');
+      if (!confirmar) return;
+
+      try {
+        const res = await fetch(`/api/proyectos/reactivar/${id}`, { method: 'PUT' });
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.mensaje);
+
+        alert('✅ Proyecto reactivado con éxito');
+        const selectedBtn = document.querySelector('.dep-btn.selected');
+        const selectedId = selectedBtn ? selectedBtn.dataset.id : null;
+        filtrarProyectosEliminadosPorDepartamento(selectedId);
+      } catch (err) {
+        console.error(err);
+        alert('❌ No se pudo reactivar el proyecto');
+      }
+    });
+  });
+}
+
+// === Inicialización ===
+document.addEventListener('DOMContentLoaded', async () => {
+  await llenarSidebarDepartamentos();
+  await filtrarProyectosEliminadosPorDepartamento();
+  // Cargar todos al inicio
+
+  // Toggle de la barra lateral
+  const toggleBtn = document.getElementById('toggleSidebar');
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      const sidebar = document.querySelector('.sidebar');
+      const contenedor = document.querySelector('.contenido'); // o .contenedor-principal si tienes ese nombre
+      sidebar.classList.toggle('oculta');
+      contenedor.classList.toggle('expandido');
     });
   }
 
-  // Cargar por defecto el primer departamento
-  if (departamentos.length > 0) cargarProyectosEliminados(departamentos[0].id);
+  document.getElementById('btn-volver').addEventListener('click', () => {
+  const usuario = JSON.parse(localStorage.getItem('usuario'));
+
+  if (!usuario || !usuario.rol) {
+    alert('No se pudo determinar el rol del usuario.');
+    return;
+  }
+
+  switch (usuario.rol.toLowerCase()) {
+    case 'admin':
+      window.location.href = 'admin.html';
+      break;
+    case 'deplider':
+      window.location.href = 'deplider.html';
+      break;
+    case 'usuario':
+      window.location.href = 'usuario.html';
+      break;
+    default:
+      alert('Rol de usuario no reconocido.');
+  }
 });
+
+
+});
+

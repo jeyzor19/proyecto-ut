@@ -50,6 +50,26 @@ async function filtrarProyectosPorDepartamento(idDepartamento) {
     console.error('Error al filtrar proyectos', error);
   }
 }
+async function eliminarProyecto(idProyecto) {
+            const confirmar = confirm('¿Estás seguro de eliminar este proyecto?');
+            if (!confirmar) return;
+
+            try {
+                const res = await fetch(`/api/proyectos/eliminar/${idProyecto}`, { method: 'PUT' });
+
+                if (res.ok) {
+                    alert('Proyecto eliminado correctamente');
+                    location.reload();
+                } else {
+                    const data = await res.json();
+                    alert('Error: ' + data.mensaje);
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Error al conectar con el servidor');
+            }
+        }
+
 
 function renderizarProyectos(proyectos, idUsuario) {
     const proyectosContainer = document.getElementById('proyectosContainer');
@@ -133,27 +153,8 @@ function renderizarProyectos(proyectos, idUsuario) {
         });
 
         // Función eliminar global
-        async function eliminarProyecto(idProyecto) {
-            const confirmar = confirm('¿Estás seguro de eliminar este proyecto?');
-            if (!confirmar) return;
-
-            try {
-                const res = await fetch(`/api/proyectos/eliminar/${idProyecto}`, { method: 'PUT' });
-
-                if (res.ok) {
-                    alert('Proyecto eliminado correctamente');
-                    location.reload();
-                } else {
-                    const data = await res.json();
-                    alert('Error: ' + data.mensaje);
-                }
-            } catch (error) {
-                console.error(error);
-                alert('Error al conectar con el servidor');
-            }
-        }
-
-        //window.eliminarProyecto = eliminarProyecto;
+        
+        window.eliminarProyecto = eliminarProyecto;
 
         // Checkbox de objetivos
         tarjeta.querySelectorAll('input[type="checkbox"][data-id]').forEach(checkbox => {
@@ -191,4 +192,4 @@ function renderizarProyectos(proyectos, idUsuario) {
 
 
 
-export { llenarSidebarDepartamentos, filtrarProyectosPorDepartamento };
+export { llenarSidebarDepartamentos, filtrarProyectosPorDepartamento};

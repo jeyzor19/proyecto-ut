@@ -302,6 +302,25 @@ const obtenerProyectosEliminados = async (req, res) => {
     res.status(500).json({ mensaje: 'Error interno del servidor' });
   }
 };
+const reactivarProyecto = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const [updated] = await proyectoDB.update(
+      { visible: true },
+      { where: { id } }
+    );
+
+    if (updated === 0) {
+      return res.status(404).json({ mensaje: 'Proyecto no encontrado.' });
+    }
+
+    res.json({ mensaje: 'Proyecto reactivado correctamente.' });
+  } catch (error) {
+    console.error('Error al reactivar proyecto:', error);
+    res.status(500).json({ mensaje: 'Error en el servidor.' });
+  }
+};
 
 
 module.exports = {
@@ -309,7 +328,8 @@ module.exports = {
   obtenerProyecto,
   marcarComoCompletado,
   eliminarProyecto,
-  obtenerProyectosEliminados
+  obtenerProyectosEliminados,
+  reactivarProyecto
 };
 
 // UPDATE `usuario` SET `id_rol` = '1', WHERE `id` = 11;

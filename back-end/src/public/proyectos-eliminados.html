@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="icon" type="img/svg+xml" href="img/Favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="img/Favicon.svg">
   <title>Proyectos Eliminados</title>
   <link rel="stylesheet" href="css/proyectos-eliminados.css" />
 </head>
 <body>
   <header class="header">
-    <button id="toggle-sidebar" class="toggle-sidebar">☰</button>
+    <div class="btns-izqsup">
+    <button id="toggleSidebar" class="toggle-sidebar">☰</button>
+    <button id="btn-volver" class="btn-volver"><img src="img/icons8-home.svg" alt="←"></button>
+    </div>
     <h1>Proyectos Eliminados</h1>
     <div class="logo-escuela"><img src="img/logoescuela.png" alt="Logo UTTN"></div>
   </header>
@@ -19,19 +22,19 @@
     <aside class="sidebar">
       <h2>Departamentos</h2>
       <ul id="lista-departamentos">
-        <!-- Botones dinámicos serán insertados aquí por JS -->
+        <!-- Botones dinámicos serán insertados aquí por JS (si decides usarlo también aquí) -->
       </ul>
     </aside>
 
     <!-- Contenedor de proyectos eliminados -->
     <section class="contenido">
-      
       <div id="proyectosEliminadosContainer">
-        <!-- Tarjetas de proyectos serán insertadas aquí -->
+        <!-- ⚠️ Cambiado de id="proyectosEliminadosContainer" a id="proyectosContainer" para que coincida con JS -->
       </div>
     </section>
   </main>
 
-  <script src="js/proyectos-eliminados.js"></script>
+  <!-- ✅ Solo se necesita un script, no ambos -->
+  <script src="js/proyectos-eliminados.js" type="module"></script>
 </body>
 </html>

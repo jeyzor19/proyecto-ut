@@ -78,5 +78,5 @@ btnVista.addEventListener('click', () => {
 });
 
 // ================== Inicializar ==================
-cargarDepartamentos();
+
 cargarProyectosPorRolDeUsuario();
