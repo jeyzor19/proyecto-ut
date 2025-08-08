@@ -237,3 +237,36 @@ body {
 .acciones-proyecto button:hover {
   background-color: #178e78;
 }
+
+.tarjeta-proyecto ul {
+  padding-left: 1.2rem;
+  margin: 0.5rem 0;
+}
+
+.tarjeta-proyecto li {
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+.barra-progreso {
+  width: 100%;
+  height: 10px;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+.progreso-interno {
+  height: 100%;
+  background-color: #1ab192; /* Color institucional verde */
+  transition: width 0.3s ease;
+}
+
+.descripcion {
+  max-height: 100px;         /* o el valor que consideres adecuado */
+  overflow-y: auto;          /* solo scroll vertical */
+  overflow-x: hidden;        /* evita scroll horizontal */
+  white-space: normal;       /* permite saltos de línea */
+  word-wrap: break-word;     /* fuerza corte de palabra si es muy larga */
+}

@@ -11,7 +11,6 @@ const cancelarProyecto = document.getElementById('cancelarProyecto');
 //localStorage.setItem('usuario', JSON.stringify(data));
 const data = localStorage.getItem('usuario');
 const user = JSON.parse(data);
-console.log('user', user);
 
 /***************
  * Obtener Departamentos
@@ -59,11 +58,9 @@ async function obtenerEncargadosPorDepartamento(idDepartamento) {
         `http://localhost:3000/api/usuarios/departamentos/${idDepartamento}`
       );
       if (!response.ok) {
-        console.log('error cargando encargados');
         return;
       }
       const data = await response.json();
-      console.log('data', data);
 
       if (data.encargados.length === 0) {
         containerEncargados.innerHTML =
@@ -103,7 +100,6 @@ function crearObjetivos() {
 
   // Mostrar text area
   botonAgregar.addEventListener('click', function () {
-    console.log('crear textarea');
     textareaOpened = true;
 
     if (textareaOpened) {
@@ -167,12 +163,10 @@ function crearObjetivos() {
           const objetivoEnLiIndex = objetivosInfo.findIndex(
             (obj) => obj.id === objetivoId
           );
-          console.log('index eliminar', objetivoEnLiIndex);
 
           if (objetivoEnLiIndex > -1) {
             objetivosInfo.splice(objetivoEnLiIndex, 1);
             objetivoLi.remove();
-            console.log(objetivosInfo);
           }
         });
 
@@ -183,10 +177,7 @@ function crearObjetivos() {
         textarea.value = '';
         nuevoObjetivo.replaceChildren();
         textareaOpened = false;
-        console.log('objetivosInfo', objetivosInfo);
       });
-
-      console.log('objetivosInfo', objetivosInfo);
     }
   });
 }
@@ -197,7 +188,6 @@ document.addEventListener('DOMContentLoaded', function () {
   const departamentoSelect = document.getElementById('departamento');
   departamentoSelect.addEventListener('change', function () {
     const selectedDepartamento = this.value;
-    console.log('selectedDepartamento', selectedDepartamento);
     obtenerEncargadosPorDepartamento(selectedDepartamento);
   });
 
@@ -229,8 +219,6 @@ form.addEventListener('submit', async (e) => {
     objetivos,
     idDepartamento,
   };
-
-  console.log('Proyecto a guardar:', proyecto);
 
   // await fetch('http://localhost:3000/api/proyectos', {...})
   try {

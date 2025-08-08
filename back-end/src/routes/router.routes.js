@@ -6,6 +6,7 @@ const usuarioRoutes = require('./usuario.routes');
 const rolRoutes = require('./rol.routes');
 const departamentoRoutes = require('./departamento.routes');
 const proyectoRoutes = require('./proyecto.routes');
+const objetivoRoutes = require('./objetivo.routes');
 // Aquí luego puedes agregar más rutas, como:
 // const proyectoRoutes = require('./proyecto.routes');
 
@@ -14,5 +15,6 @@ router.use('/api/usuarios', usuarioRoutes);
 router.use('/api/roles', rolRoutes);
 router.use('/api/departamentos', departamentoRoutes);
 router.use('/api/proyectos', proyectoRoutes);
+router.use('/api/objetivos', objetivoRoutes);
 
 module.exports = router;

@@ -99,8 +99,8 @@ const crearProyecto = async (req, res) => {
       Array.isArray(proyecto.objetivos)
     ) {
       const listaObjetivos = proyecto.objetivos.map((obj) => ({
-        descripcion: obj.texto,
-        completado: obj.cumplido || false,
+        descripcion: obj,
+        completado: false,
         id_proyecto: nuevoProyecto.id,
       }));
       await objetivoDB.bulkCreate(listaObjetivos);
@@ -127,8 +127,6 @@ const crearProyecto = async (req, res) => {
 const obtenerProyecto = async (req, res) => {
   try {
     const { idUsuario } = req.params;
-
-    // Obtener usuario con sus departamentos
     const usuario = await usuarioDB.findByPk(idUsuario, {
       include: ['departamentos'],
     });
@@ -141,38 +139,53 @@ const obtenerProyecto = async (req, res) => {
     const usuarioDepartamentos = usuario.departamentos.map(dep => dep.id);
 
     // 🐛 Consolas útiles para depuración
-    console.log('idUsuario:', idUsuario);
-    console.log('usuario:', usuario.toJSON?.() || usuario);
-    console.log('usuarioDepartamentos:', usuarioDepartamentos);
 
     let proyectos = [];
 
+    const includeObjetivos = [
+      {
+        model: objetivoDB,
+        as: 'objetivos',
+        attributes: ['id', 'descripcion', 'completado']
+      }
+    ];
+
     if (usuarioRol === 1) {
       // 🟢 Admin: todos los proyectos
-      proyectos = await proyectoDB.findAll();
+      proyectos = await proyectoDB.findAll({ where: { visible: true }, include: includeObjetivos });
+
     } else if (usuarioRol === 2) {
       // 🔵 DepLider: proyectos de los departamentos del usuario
       proyectos = await proyectoDB.findAll({
         where: {
-          id_departamento: usuarioDepartamentos
-        }
+          id_departamento: usuarioDepartamentos, visible: true
+        },
+        include: includeObjetivos
       });
+
     } else if (usuarioRol === 3) {
       // 🟠 Usuario: proyectos que creó o donde está asignado como encargado
+
       const proyectosComoEncargado = await proyectoDB.findAll({
-        include: [{
-          model: usuarioDB,
-          as: 'encargados',
-          where: { id: idUsuario },
-          attributes: [],
-          through: { attributes: [] }
-        }]
+        where: { visible: true },
+        include: [
+          includeObjetivos,
+          {
+            model: usuarioDB,
+            as: 'encargados',
+            where: { id: idUsuario },
+            attributes: [],
+            through: { attributes: [] }
+          }
+        ]
       });
 
       const proyectosCreados = await proyectoDB.findAll({
         where: {
-          id_creador: idUsuario
-        }
+          id_creador: idUsuario,
+          visible: true
+        },
+        include: includeObjetivos
       });
 
       // Unificar sin duplicar
@@ -182,6 +195,20 @@ const obtenerProyecto = async (req, res) => {
       });
       proyectos = Array.from(mapa.values());
     }
+    // 🔁 Calcular el progreso basado en objetivos completados
+    proyectos = proyectos.map(p => {
+      const objetivos = p.objetivos || [];
+      const total = objetivos.length;
+      const completados = objetivos.filter(obj => obj.completado).length;
+      const progreso = total === 0 ? 0 : Math.round((completados / total) * 100);
+
+      // 🧠 Agrega el progreso al objeto JSON
+      const json = p.toJSON();
+      json.progreso = progreso;
+
+      return json;
+    });
+
 
     res.status(200).json(proyectos);
   } catch (error) {
@@ -190,10 +217,87 @@ const obtenerProyecto = async (req, res) => {
   }
 };
 
+const marcarComoCompletado = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const proyecto = await proyectoDB.findByPk(id, {
+      include: ['objetivos'],
+    });
+
+    if (!proyecto) {
+      return res.status(404).json({ mensaje: 'Proyecto no encontrado' });
+    }
+
+    const objetivos = proyecto.objetivos || [];
+    const total = objetivos.length;
+    const completados = objetivos.filter(o => o.completado).length;
+
+    if (total === 0) {
+      return res.status(400).json({ mensaje: 'El proyecto no tiene objetivos.' });
+    }
+
+    if (completados < total) {
+      return res.status(400).json({ mensaje: 'Aún hay objetivos pendientes.' });
+    }
+
+    // ✅ Todos los objetivos están completos, actualiza progreso a 100
+    proyecto.progreso = 100;
+    await proyecto.save();
+
+    return res.status(200).json({ mensaje: 'Proyecto completado con éxito.' });
+  } catch (error) {
+    console.error('Error al completar proyecto:', error);
+    res.status(500).json({ mensaje: 'Error interno del servidor.' });
+  }
+};
+
+const eliminarProyecto = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const [updated] = await proyectoDB.update(
+      { visible: false },
+      { where: { id } }
+    );
+
+    if (updated === 0) {
+      return res.status(404).json({ mensaje: 'Proyecto no encontrado.' });
+    }
+
+    res.json({ mensaje: 'Proyecto eliminado correctamente.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ mensaje: 'Error en el servidor.' });
+  }
+};
+
+
+const obtenerProyectosEliminados = async (req, res) => {
+  try {
+    const proyectos = await proyectoDB.findAll({
+      where: { visible: false },
+      include: [{
+        model: objetivoDB,
+        as: 'objetivos',
+        attributes: ['id', 'descripcion', 'completado']
+      }]
+    });
+
+    res.status(200).json(proyectos);
+  } catch (error) {
+    console.error('Error al obtener proyectos eliminados:', error);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+};
+
 
 module.exports = {
   crearProyecto,
   obtenerProyecto,
+  marcarComoCompletado,
+  eliminarProyecto,
+  obtenerProyectosEliminados
 };
 
 // UPDATE `usuario` SET `id_rol` = '1', WHERE `id` = 11;
