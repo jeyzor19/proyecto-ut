@@ -10,7 +10,7 @@ if (!usuario || usuario.rol !== 'Usuario') {
 // ================== Elementos del DOM ==================
 const logoutBtn = document.getElementById('logoutBtn');
 const listaDepartamentos = document.getElementById('listaDepartamentos');
-const contenedorProyectos = document.getElementById('contenedorProyectos');
+const contenedorProyectos = document.getElementById('proyectosContainer');
 const btnNuevoProyecto = document.getElementById('btnNuevoProyecto');
 const btnVista = document.getElementById('btnVista');
 
