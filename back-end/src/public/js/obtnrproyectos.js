@@ -9,15 +9,20 @@ async function llenarSidebarDepartamentos() {
 
     departamentos.forEach(dep => {
       const li = document.createElement('li');
-      li.innerHTML = `<button class="dep-btn" data-id="${dep.id}">${dep.nombre}</button>`;
+      li.innerHTML = `<button class="dep-btn selected" data-id="${dep.id}">${dep.nombre}</button>`;
       contenedor.appendChild(li);
     });
 
     contenedor.addEventListener('click', (e) => {
-      if (e.target.classList.contains('dep-btn')) {
-        const idDep = e.target.getAttribute('data-id');
-        filtrarProyectosPorDepartamento(idDep); // Esta función la definiremos después
-      }
+    const btn = e.target.closest('.dep-btn');
+    if (!btn) return;
+
+    // Quitar selected de todos y aplicarlo al clicado
+    contenedor.querySelectorAll('.dep-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+
+    const idDep = btn.getAttribute('data-id') || '';
+    filtrarProyectosPorDepartamento(idDep);
     });
   } catch (err) {
     console.error('Error al cargar departamentos del usuario', err);

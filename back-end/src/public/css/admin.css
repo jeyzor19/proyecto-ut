@@ -103,6 +103,14 @@ body {
   margin: 0;
 }
 
+#lista-departamentos button.selected {
+  background-color: #1ab192;
+  color: #ffffff;
+  font-weight: bold;
+  border-left: 4px solid #7c7c7c;
+}
+
+
 #lista-departamentos li {
   margin-bottom: 10px;
 }
