@@ -48,6 +48,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!usuario) {
     window.location.href = 'login.html';
   }
+
+  cargarDepartamentos();
+
+  // ================== Cargar proyectos ==================
+  cargarProyectosPorRolDeUsuario();
 });
 
 // ================== Cargar departamentos ==================
@@ -74,7 +79,7 @@ async function cargarDepartamentos() {
 
 // ================== Cargar proyectos ==================
 async function cargarProyectosPorRolDeUsuario() {
-  mostrarProyectos(usuario.id)
+  mostrarProyectos(usuario.id);
 }
 
 async function cargarProyectosPorDepartamento(idDepartamento) {
@@ -97,5 +102,3 @@ btnVista.addEventListener('click', () => {
 // ================== Nuevo proyecto ==================
 
 // ================== Inicializar ==================
-cargarDepartamentos();
-cargarProyectosPorRolDeUsuario();

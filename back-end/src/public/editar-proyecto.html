@@ -1,48 +1,65 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="img/svg+xml" href="img/Favicon.svg">
-  <title>Editar Proyecto</title>
-  <link rel="stylesheet" href="css/editar-proyecto.css">
-</head>
-<body>
-  <header class="header">
-    <h1>Editar Proyecto</h1>
-    <div class="logo-escuela">
-      <img src="img/logoescuela.png" alt="Logo UTTN">
-    </div>
-  </header>
-
-  <main class="main">
-    <form id="formEditarProyecto">
-      <label for="nombre">Nombre del Proyecto</label>
-      <input type="text" id="nombre" name="nombre" required>
-
-      <label for="area">Área</label>
-      <input type="text" id="area" name="area" required>
-
-      <label for="descripcion">Descripción</label>
-      <textarea id="descripcion" name="descripcion" required></textarea>
-
-      <label for="encargados">Encargados (separados por coma)</label>
-      <input type="text" id="encargados" name="encargados">
-
-      <div id="objetivosContainer">
-        <h3>Objetivos</h3>
-        <ul id="listaObjetivos"></ul>
-        <input type="text" id="nuevoObjetivoTexto" placeholder="Nuevo objetivo">
-        <button type="button" id="btnAgregarObjetivo">Agregar Objetivo</button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="img/svg+xml" href="img/Favicon.svg" />
+    <title>Editar Proyecto</title>
+    <link rel="stylesheet" href="css/crear-proyecto.css" />
+  </head>
+  <body>
+    <header class="header">
+      <h1>Editar Proyecto</h1>
+      <div class="logo-escuela">
+        <img src="img/logoescuela.png" alt="Logo UTTN" />
       </div>
+    </header>
 
-      <div class="acciones">
-        <button type="submit">Guardar Cambios</button>
-        <button type="button" id="btnCancelar">Cancelar</button>
-      </div>
-    </form>
-  </main>
+    <main class="formulario-contenedor">
+      <form id="formCreatePrj">
+        <label for="nombre">Nombre del Proyecto:</label>
+        <input type="text" id="nombre" name="nombre" required />
 
-  <script src="js/editar-proyecto.js"></script>
-</body>
+        <label for="area">Área:</label>
+        <input type="text" id="area" name="area" required />
+
+        <label for="descripcion">Descripción:</label>
+        <textarea
+          id="descripcion"
+          name="descripcion"
+          rows="4"
+          required
+        ></textarea>
+
+        <label for="departamento">Departamento:</label>
+        <select id="departamento" name="departamento">
+          <!-- Se llenará dinámicamente según los departamentos del usuario -->
+        </select>
+
+        <br />
+        <label for="encargados">Encargados:</label>
+        <div id="encargados" class="encargados">
+          <div class="empty-state">
+            Selecciona un departamento para ver los encargados
+          </div>
+        </div>
+
+        <div id="seccionObjetivos">
+          <label>Objetivos:</label>
+          <ul id="listaObjetivos">
+            <!-- Objetivos dinámicos -->
+          </ul>
+          <div id="objetivo-nuevo"></div>
+          <button type="button" id="agregarObjetivo">+ Agregar Objetivo</button>
+        </div>
+
+        <div class="acciones-formulario">
+          <button type="submit">Guardar Proyecto</button>
+          <button type="button" id="cancelarProyecto">Cancelar</button>
+        </div>
+      </form>
+    </main>
+
+    <script src="js/editar-proyecto.js"></script>
+  </body>
 </html>

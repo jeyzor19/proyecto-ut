@@ -126,6 +126,46 @@ const crearProyecto = async (req, res) => {
   }
 };
 
+const obtenerProyectoPorId = async (req, res) => {
+  try {
+    const { usuarioId, proyectoId } = req.params;
+    console.log('usuarioId', usuarioId);
+    console.log('proyectoId', proyectoId);
+
+    const proyecto = await proyectoDB.findByPk(proyectoId, {
+      include: [
+        {
+          model: objetivoDB,
+          as: 'objetivos', // asegúrate que el alias coincida con tu modelo
+          attributes: ['id', 'descripcion', 'completado'],
+        },
+        {
+          model: usuarioDB,
+          as: 'encargados', // a través de la tabla intermedia proyectousuario
+          attributes: ['id', 'nombre', 'apellidos', 'correo'],
+          through: { attributes: [] }, // excluir campos de la tabla intermedia
+        },
+        {
+          model: usuarioDB,
+          as: 'creador', // el usuario que creó el proyecto
+          attributes: ['id', 'nombre', 'apellidos', 'correo'],
+        },
+        {
+          model: departamentoDB,
+          as: 'departamento',
+          attributes: ['id', 'nombre'],
+        },
+      ],
+    });
+
+    console.log('Proyecto: \n', proyecto);
+    res.status(200).send({ proyecto });
+  } catch (error) {
+    console.error('Error al editar el proyecto:', error);
+    res.status(500).json({ mensaje: `Error interno del servidor. ${error}` });
+  }
+};
+
 const obtenerProyecto = async (req, res) => {
   try {
     const { idUsuario } = req.params;
@@ -138,7 +178,7 @@ const obtenerProyecto = async (req, res) => {
     }
 
     const usuarioRol = usuario.id_rol;
-    const usuarioDepartamentos = usuario.departamentos.map(dep => dep.id);
+    const usuarioDepartamentos = usuario.departamentos.map((dep) => dep.id);
 
     // 🐛 Consolas útiles para depuración
 
@@ -148,23 +188,25 @@ const obtenerProyecto = async (req, res) => {
       {
         model: objetivoDB,
         as: 'objetivos',
-        attributes: ['id', 'descripcion', 'completado']
-      }
+        attributes: ['id', 'descripcion', 'completado'],
+      },
     ];
 
     if (usuarioRol === 1) {
       // 🟢 Admin: todos los proyectos
-      proyectos = await proyectoDB.findAll({ where: { visible: true }, include: includeObjetivos });
-
+      proyectos = await proyectoDB.findAll({
+        where: { visible: true },
+        include: includeObjetivos,
+      });
     } else if (usuarioRol === 2) {
       // 🔵 DepLider: proyectos de los departamentos del usuario
       proyectos = await proyectoDB.findAll({
         where: {
-          id_departamento: usuarioDepartamentos, visible: true
+          id_departamento: usuarioDepartamentos,
+          visible: true,
         },
-        include: includeObjetivos
+        include: includeObjetivos,
       });
-
     } else if (usuarioRol === 3) {
       // 🟠 Usuario: proyectos que creó o donde está asignado como encargado
 
@@ -177,32 +219,33 @@ const obtenerProyecto = async (req, res) => {
             as: 'encargados',
             where: { id: idUsuario },
             attributes: [],
-            through: { attributes: [] }
-          }
-        ]
+            through: { attributes: [] },
+          },
+        ],
       });
 
       const proyectosCreados = await proyectoDB.findAll({
         where: {
           id_creador: idUsuario,
-          visible: true
+          visible: true,
         },
-        include: includeObjetivos
+        include: includeObjetivos,
       });
 
       // Unificar sin duplicar
       const mapa = new Map();
-      [...proyectosCreados, ...proyectosComoEncargado].forEach(p => {
+      [...proyectosCreados, ...proyectosComoEncargado].forEach((p) => {
         mapa.set(p.id, p);
       });
       proyectos = Array.from(mapa.values());
     }
     // 🔁 Calcular el progreso basado en objetivos completados
-    proyectos = proyectos.map(p => {
+    proyectos = proyectos.map((p) => {
       const objetivos = p.objetivos || [];
       const total = objetivos.length;
-      const completados = objetivos.filter(obj => obj.completado).length;
-      const progreso = total === 0 ? 0 : Math.round((completados / total) * 100);
+      const completados = objetivos.filter((obj) => obj.completado).length;
+      const progreso =
+        total === 0 ? 0 : Math.round((completados / total) * 100);
 
       // 🧠 Agrega el progreso al objeto JSON
       const json = p.toJSON();
@@ -210,7 +253,6 @@ const obtenerProyecto = async (req, res) => {
 
       return json;
     });
-
 
     res.status(200).json(proyectos);
   } catch (error) {
@@ -233,10 +275,12 @@ const marcarComoCompletado = async (req, res) => {
 
     const objetivos = proyecto.objetivos || [];
     const total = objetivos.length;
-    const completados = objetivos.filter(o => o.completado).length;
+    const completados = objetivos.filter((o) => o.completado).length;
 
     if (total === 0) {
-      return res.status(400).json({ mensaje: 'El proyecto no tiene objetivos.' });
+      return res
+        .status(400)
+        .json({ mensaje: 'El proyecto no tiene objetivos.' });
     }
 
     if (completados < total) {
@@ -274,16 +318,17 @@ const eliminarProyecto = async (req, res) => {
   }
 };
 
-
 const obtenerProyectosEliminados = async (req, res) => {
   try {
     const proyectos = await proyectoDB.findAll({
       where: { visible: false },
-      include: [{
-        model: objetivoDB,
-        as: 'objetivos',
-        attributes: ['id', 'descripcion', 'completado']
-      }]
+      include: [
+        {
+          model: objetivoDB,
+          as: 'objetivos',
+          attributes: ['id', 'descripcion', 'completado'],
+        },
+      ],
     });
 
     res.status(200).json(proyectos);
@@ -293,13 +338,13 @@ const obtenerProyectosEliminados = async (req, res) => {
   }
 };
 
-
 module.exports = {
   crearProyecto,
   obtenerProyecto,
+  obtenerProyectoPorId,
   marcarComoCompletado,
   eliminarProyecto,
-  obtenerProyectosEliminados
+  obtenerProyectosEliminados,
 };
 
 // UPDATE `usuario` SET `id_rol` = '1', WHERE `id` = 11;
