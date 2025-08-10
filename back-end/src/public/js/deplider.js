@@ -1,5 +1,5 @@
 // deplider.js
-import mostrarProyectos from './obtnrproyectos.js';
+import {llenarSidebarDepartamentos } from './obtnrproyectos.js';
 
 
 // ================== Validar sesión ==================
@@ -47,6 +47,10 @@ document.addEventListener("DOMContentLoaded", () => {
 async function cargarProyectosPorRolDeUsuario() {
   mostrarProyectos(usuario.id)
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  llenarSidebarDepartamentos();
+});
 
 async function cargarProyectosPorDepartamento(idDepartamento) {
   try {
