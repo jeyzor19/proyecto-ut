@@ -147,7 +147,7 @@ function crearObjetivos() {
           return;
         }
         const objetivoId = objetivoCounter++;
-        objetivosInfo.push({ id: objetivoId, texto: textoObjetivo });
+        objetivosInfo.push({ id: objetivoId, descripcion: textoObjetivo });
 
         // crear li para agregar a la lista
         const objetivoLi = document.createElement('li');
@@ -194,30 +194,125 @@ async function getFormData(usuarioId, proyectoId) {
     const data = await response.json();
 
     console.log(data);
+    return data;
   } catch (error) {
     console.log(error);
+    throw new Error('Error getting project data');
   }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+function populateObjetivos(infoProyecto) {
+  console.log('🎯 Populating objetivos from objects...');
+
+  // Clear existing objetivos first
+  objetivosInfo.length = 0;
+  objetivoCounter = 0;
+
+  const listaObjetivos = document.getElementById('listaObjetivos');
+  listaObjetivos.innerHTML = '';
+
+  if (!infoProyecto.objetivos || infoProyecto.objetivos.length === 0) {
+    console.log('ℹ️ This project has no objetivos');
+    return;
+  }
+
+  console.log('📋 Loading objetivos:', infoProyecto.objetivos);
+
+  infoProyecto.objetivos.forEach((objetivo) => {
+    // Handle both string and object formats
+    const objetivoDescripcion = objetivo.descripcion;
+    const objetivoId = objetivo.id;
+
+    // Add to internal array
+    objetivosInfo.push({
+      id: objetivoId,
+      descripcion: objetivoDescripcion,
+    });
+
+    // Create li element for display
+    const objetivoLi = document.createElement('li');
+    objetivoLi.textContent = objetivoDescripcion;
+
+    // Create delete button
+    const eliminarObjBoton = document.createElement('button');
+    eliminarObjBoton.type = 'button';
+    eliminarObjBoton.className = 'eliminar-obj-btn';
+    eliminarObjBoton.textContent = '❌';
+
+    eliminarObjBoton.addEventListener('click', () => {
+      const objetivoEnLiIndex = objetivosInfo.findIndex(
+        (obj) => obj.id === objetivoId
+      );
+
+      if (objetivoEnLiIndex > -1) {
+        objetivosInfo.splice(objetivoEnLiIndex, 1);
+        objetivoLi.remove();
+      }
+    });
+
+    objetivoLi.appendChild(eliminarObjBoton);
+    listaObjetivos.appendChild(objetivoLi);
+  });
+
+  console.log(
+    `✅ Successfully loaded ${infoProyecto.objetivos.length} objetivos \n ${objetivosInfo}`
+  );
+}
+
+document.addEventListener('DOMContentLoaded', async function () {
   // Load data and populate
 
   obtenerDepartamentos();
 
-  const departamentoSelect = document.getElementById('departamento');
-  departamentoSelect.addEventListener('change', function () {
-    const selectedDepartamento = this.value;
-    obtenerEncargadosPorDepartamento(selectedDepartamento);
-  });
+  // const departamentoSelect = document.getElementById('departamento');
+  // departamentoSelect.addEventListener('change', function () {
+  //   const selectedDepartamento = this.value;
+  //   obtenerEncargadosPorDepartamento(selectedDepartamento);
+  // });
 
   // Objetivos
   crearObjetivos();
 
-  // Obtener Datos de proyecto
+  // Obtener Datos de proyecto para editarlo
   const urlParams = new URLSearchParams(window.location.search);
   const usuarioId = urlParams.get('usuarioId');
   const proyectoId = urlParams.get('proyectoId');
-  getFormData(usuarioId, proyectoId);
+  const infoProyecto = await getFormData(usuarioId, proyectoId);
+  // Llenado de campos del formulario para editar proyecto
+  const nombreInput = form.nombre;
+  const areaInput = form.area;
+  const descripcionInput = form.descripcion;
+  const departamentoSelectInput = form.departamento;
+  console.log('infoProyecto', infoProyecto);
+  console.log('nombre', infoProyecto.nombre);
+  console.log('area', infoProyecto.area);
+  console.log('descripcion', infoProyecto.descripcion);
+  nombreInput.value = infoProyecto.nombre;
+  areaInput.value = infoProyecto.area;
+  descripcionInput.value = infoProyecto.descripcion;
+
+  // Seleccionar ID como valor para la opción de select
+  departamentoSelectInput.value = infoProyecto.departamento.id;
+  // Ejecutar evento change para cargar encargados cuando se selecciona un departamento
+  departamentoSelectInput.dispatchEvent(new Event('change'));
+  setTimeout(async () => {
+    await obtenerEncargadosPorDepartamento(infoProyecto.departamento.id);
+
+    console.log('infoProyecto.encargados', infoProyecto.encargados);
+    if (infoProyecto.encargados) {
+      infoProyecto.encargados.forEach((encargado) => {
+        const checkbox = document.getElementById(`encargado_${encargado.id}`);
+        console.log('Checkbox: ', checkbox);
+        if (checkbox) {
+          checkbox.checked = true;
+        }
+      });
+    }
+  }, 500);
+
+  console.log('infoProyecto.objetivos', infoProyecto.objetivos);
+
+  populateObjetivos(infoProyecto);
 });
 
 // Evento de envío del formulario
@@ -232,9 +327,13 @@ form.addEventListener('submit', async (e) => {
     form.querySelectorAll('input[name="encargados"]:checked')
   ).map((checkbox) => checkbox.value);
 
+  console.log('objetivosInfo SUBMIT', objetivosInfo);
   const objetivos = objetivosInfo
-    .map((obj) => obj.texto.trim())
-    .filter((txt) => txt.length > 0);
+    .map((obj) => obj.descripcion.trim())
+    .filter((txt) => {
+      console.log('filter text', txt);
+      return txt.length > 0;
+    });
 
   const proyecto = {
     nombre,
@@ -245,7 +344,8 @@ form.addEventListener('submit', async (e) => {
     idDepartamento,
   };
 
-  // await fetch('http://localhost:3000/api/proyectos', {...})
+  console.log('PROYECTO', proyecto);
+
   try {
     const response = await fetch('http://localhost:3000/api/proyectos', {
       method: 'POST',
@@ -260,7 +360,7 @@ form.addEventListener('submit', async (e) => {
 
     if (!response.ok) throw new Error('Response not ok');
 
-    alert('Proyecto creado correctamente');
+    alert('Proyecto actualizado correctamente');
     window.location.href = 'admin.html';
   } catch (error) {
     alert(`Error: ${error}`);

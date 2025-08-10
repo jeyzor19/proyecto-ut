@@ -2,6 +2,7 @@ const {
   proyecto: proyectoDB,
   objetivo: objetivoDB,
   bitacora: bitacoraDB,
+  departamento: departamentoDB,
   proyectousuario: proyectousuarioDB,
   historial: historialDB,
   usuario: usuarioDB,
@@ -159,7 +160,7 @@ const obtenerProyectoPorId = async (req, res) => {
     });
 
     console.log('Proyecto: \n', proyecto);
-    res.status(200).send({ proyecto });
+    res.status(200).send(proyecto);
   } catch (error) {
     console.error('Error al editar el proyecto:', error);
     res.status(500).json({ mensaje: `Error interno del servidor. ${error}` });
