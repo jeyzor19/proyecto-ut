@@ -11,7 +11,7 @@ if (!usuario || usuario.rol !== 'DepLider') {
 // ================== Elementos del DOM ==================
 const logoutBtn = document.getElementById('logoutBtn');
 const listaDepartamentos = document.getElementById('listaDepartamentos');
-const contenedorProyectos = document.getElementById('contenedorProyectos');
+const contenedorProyectos = document.getElementById('proyectosContainer');
 const btnNuevoProyecto = document.getElementById('btnNuevoProyecto');
 const btnCambiarVista = document.getElementById('btnCambiarVista');
 const btnVerEliminados = document.getElementById('btnVerEliminados');
@@ -42,29 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// ================== Cargar departamentos asignados ==================
-async function cargarDepartamentos() {
-  try {
-    const res = await fetch('http://localhost:3000/api/departamentos');
-    const departamentos = await res.json();
-    listaDepartamentos.innerHTML = '';
-
-    const depAsignados = usuario.departamentos || [];
-
-    departamentos
-      .filter(dep => depAsignados.includes(dep.id))
-      .forEach(dep => {
-        const boton = document.createElement('button');
-        boton.textContent = dep.nombre;
-        boton.classList.add('btn-departamento');
-        boton.dataset.id = dep.id;
-        boton.addEventListener('click', () => cargarProyectosPorDepartamento(dep.id));
-        listaDepartamentos.appendChild(boton);
-      });
-  } catch (error) {
-    console.error('Error al cargar departamentos:', error);
-  }
-}
 
 // ================== Cargar proyectos ==================
 async function cargarProyectosPorRolDeUsuario() {

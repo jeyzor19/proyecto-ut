@@ -401,11 +401,17 @@ const obtenerProyecto = async (req, res) => {
 
     let proyectos = [];
 
-    const includeObjetivos = [
+    const includeObjetivosYEncargados = [
       {
         model: objetivoDB,
         as: 'objetivos',
         attributes: ['id', 'descripcion', 'completado'],
+      },
+      {
+        model: usuarioDB,
+        as: 'encargados',
+        attributes: ['id', 'nombre', 'apellidos'],
+        through: { attributes: [] },
       },
     ];
 
@@ -413,7 +419,7 @@ const obtenerProyecto = async (req, res) => {
       // 🟢 Admin: todos los proyectos
       proyectos = await proyectoDB.findAll({
         where: { visible: true },
-        include: includeObjetivos,
+        include: includeObjetivosYEncargados,
       });
     } else if (usuarioRol === 2) {
       // 🔵 DepLider: proyectos de los departamentos del usuario
@@ -422,7 +428,7 @@ const obtenerProyecto = async (req, res) => {
           id_departamento: usuarioDepartamentos,
           visible: true,
         },
-        include: includeObjetivos,
+        include: includeObjetivosYEncargados,
       });
     } else if (usuarioRol === 3) {
       // 🟠 Usuario: proyectos que creó o donde está asignado como encargado
@@ -430,16 +436,20 @@ const obtenerProyecto = async (req, res) => {
       const proyectosComoEncargado = await proyectoDB.findAll({
         where: { visible: true },
         include: [
-          includeObjetivos,
+          ...includeObjetivosYEncargados,
           {
             model: usuarioDB,
             as: 'encargados',
-            where: { id: idUsuario },
-            attributes: [],
+            attributes: ['id', 'nombre', 'apellidos'], // ✅ Ahora se incluyen todos
             through: { attributes: [] },
           },
         ],
       });
+
+      // Filtrar solo aquellos donde el usuario está asignado
+      const filtrados = proyectosComoEncargado.filter((p) =>
+        p.encargados.some((e) => e.id === +idUsuario)
+      );
 
       const proyectosCreados = await proyectoDB.findAll({
         where: {
@@ -447,11 +457,12 @@ const obtenerProyecto = async (req, res) => {
           visible: true,
         },
         include: includeObjetivos,
+        include: includeObjetivosYEncargados,
       });
 
-      // Unificar sin duplicar
+      // Unificar sin duplicados
       const mapa = new Map();
-      [...proyectosCreados, ...proyectosComoEncargado].forEach((p) => {
+      [...proyectosCreados, ...filtrados].forEach((p) => {
         mapa.set(p.id, p);
       });
       proyectos = Array.from(mapa.values());
@@ -554,6 +565,25 @@ const obtenerProyectosEliminados = async (req, res) => {
     res.status(500).json({ mensaje: 'Error interno del servidor' });
   }
 };
+const reactivarProyecto = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const [updated] = await proyectoDB.update(
+      { visible: true },
+      { where: { id } }
+    );
+
+    if (updated === 0) {
+      return res.status(404).json({ mensaje: 'Proyecto no encontrado.' });
+    }
+
+    res.json({ mensaje: 'Proyecto reactivado correctamente.' });
+  } catch (error) {
+    console.error('Error al reactivar proyecto:', error);
+    res.status(500).json({ mensaje: 'Error en el servidor.' });
+  }
+};
 
 module.exports = {
   crearProyecto,
@@ -563,6 +593,7 @@ module.exports = {
   eliminarProyecto,
   obtenerProyectosEliminados,
   actualizarProyecto,
+  reactivarProyecto,
 };
 
 // UPDATE `usuario` SET `id_rol` = '1', WHERE `id` = 11;

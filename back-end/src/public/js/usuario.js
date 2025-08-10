@@ -1,6 +1,6 @@
 // usuario.js
 
-import mostrarProyectos from './obtnrproyectos.js';
+import {llenarSidebarDepartamentos} from './obtnrproyectos.js';
 
 const usuario = JSON.parse(localStorage.getItem('usuario'));
 if (!usuario || usuario.rol !== 'Usuario') {
@@ -49,27 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// ================== Cargar departamentos asignados ==================
-async function cargarDepartamentos() {
-  try {
-    const res = await fetch('http://localhost:3000/api/departamentos');
-    const departamentos = await res.json();
-    listaDepartamentos.innerHTML = '';
+document.addEventListener('DOMContentLoaded', () => {
+  llenarSidebarDepartamentos();
+});
 
-    departamentos.forEach((dep) => {
-      const boton = document.createElement('button');
-      boton.textContent = dep.nombre;
-      boton.classList.add('btn-departamento');
-      boton.dataset.id = dep.id;
-      boton.addEventListener('click', () =>
-        cargarProyectosPorDepartamento(dep.id)
-      );
-      listaDepartamentos.appendChild(boton);
-    });
-  } catch (error) {
-    console.error('Error al cargar departamentos:', error);
-  }
-}
+
 
 // ================== Cargar proyectos ==================
 async function cargarProyectosPorRolDeUsuario() {
@@ -94,5 +78,5 @@ btnVista.addEventListener('click', () => {
 });
 
 // ================== Inicializar ==================
-cargarDepartamentos();
+
 cargarProyectosPorRolDeUsuario();

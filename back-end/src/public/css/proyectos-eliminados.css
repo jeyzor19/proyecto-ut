@@ -36,16 +36,39 @@ main {
   height: 100%;
 }
 
+/* Sidebar */
 .sidebar {
-  width: 220px;
+  width: 200px;
   background-color: #1ab192;
   color: white;
   padding: 20px;
-  transition: transform 0.3s ease;
 }
 
-.sidebar.hidden {
-  transform: translateX(-100%);
+.sidebar h2 {
+  font-size: 18px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Añadir esto a tu admin.css */
+.sidebar.oculta {
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+  transition: width 0.3s ease, padding 0.3s ease;
+}
+
+.sidebar.oculta {
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+  transition: width 0.3s ease, padding 0.3s ease;
+}
+
+.sidebar h2 {
+  font-size: 18px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .toggle-sidebar {
@@ -56,7 +79,7 @@ main {
   border-style: solid;
   border-radius: 1px;
   cursor: pointer;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
   border-radius: 4px;
 }
 
@@ -78,8 +101,8 @@ main {
 
 #lista-departamentos button {
   width: 100%;
-  background-color: #495057;
-  color: white;
+  background-color: #e0e0e0;
+  color: #333;
   border: none;
   padding: 10px;
   border-radius: 4px;
@@ -146,4 +169,119 @@ main {
 
 .proyecto-card button:hover {
   background-color: #148c75;
+}
+
+.btn-reactivar {
+  background-color: #296b3f;
+  color: white;
+  border: 1px solid white;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-reactivar:hover {
+  background-color: #112c1a;
+}
+
+.tarjeta-proyecto {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 300px;
+  height: 380px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  overflow: hidden;
+  margin: 10px;
+}
+
+.contenido-proyecto {
+  overflow-y: auto;
+  flex-grow: 1;
+  padding-right: 4px;
+}
+
+.contenido-proyecto h3 {
+  margin-top: 0;
+  color: #1ab192;
+}
+
+.descripcion {
+  max-height: 100px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+
+.acciones-proyecto {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding-top: 10px;
+  border-top: 1px solid #ddd;
+  background-color: #f9f9f9;
+}
+
+
+.acciones-proyecto button {
+  margin: 2px;
+  padding: 6px 10px;
+  flex: 1 1 calc(50% - 6px);
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  background-color: #1ab192;
+  color: white;
+  transition: background-color 0.2s ease;
+}
+
+.acciones-proyecto button:hover {
+  background-color: #178e78;
+}
+
+#lista-departamentos button.selected {
+  background-color: #ffffff;
+  color: #1ab192;
+  font-weight: bold;
+  border-left: 4px solid #1ab192;
+}
+
+
+.btn-volver {
+  width: 40px;
+  height: 40px;
+  padding: 6px;
+  background-color: #1ab192;
+  border: 1px solid white;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.btn-volver img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+
+.btn-volver:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.btns-izqsup {
+  display: flex;
+  gap: 10px; /* Espacio entre botones */
+  align-items: center;
 }
