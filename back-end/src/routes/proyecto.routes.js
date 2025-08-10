@@ -9,10 +9,12 @@ const {
 
 // Crear proyecto
 router.post('/', proyectoController.crearProyecto);
+router.put('/:proyectoId', proyectoController.actualizarProyecto);
 router.get(
   '/porid/:usuarioId/:proyectoId',
   proyectoController.obtenerProyectoPorId
 );
+
 router.get('/usuario/:idUsuario', proyectoController.obtenerProyecto);
 router.put('/:id/completar', marcarComoCompletado);
 router.put('/eliminar/:id', eliminarProyecto);

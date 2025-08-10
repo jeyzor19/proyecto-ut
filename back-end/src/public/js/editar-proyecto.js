@@ -259,6 +259,7 @@ function populateObjetivos(infoProyecto) {
   );
 }
 
+var proyectoId;
 document.addEventListener('DOMContentLoaded', async function () {
   // Load data and populate
 
@@ -276,9 +277,11 @@ document.addEventListener('DOMContentLoaded', async function () {
   // Obtener Datos de proyecto para editarlo
   const urlParams = new URLSearchParams(window.location.search);
   const usuarioId = urlParams.get('usuarioId');
-  const proyectoId = urlParams.get('proyectoId');
+  proyectoId = urlParams.get('proyectoId');
   const infoProyecto = await getFormData(usuarioId, proyectoId);
+
   // Llenado de campos del formulario para editar proyecto
+  console.log('infoProyecto', infoProyecto);
   const nombreInput = form.nombre;
   const areaInput = form.area;
   const descripcionInput = form.descripcion;
@@ -347,16 +350,19 @@ form.addEventListener('submit', async (e) => {
   console.log('PROYECTO', proyecto);
 
   try {
-    const response = await fetch('http://localhost:3000/api/proyectos', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        usuario: user,
-        proyecto: proyecto,
-      }),
-    });
+    const response = await fetch(
+      `http://localhost:3000/api/proyectos/${proyectoId}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          usuario: user,
+          proyecto: proyecto,
+        }),
+      }
+    );
 
     if (!response.ok) throw new Error('Response not ok');
 
