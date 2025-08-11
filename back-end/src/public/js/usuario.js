@@ -56,9 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ================== Cargar proyectos ==================
-async function cargarProyectosPorRolDeUsuario() {
+/*async function cargarProyectosPorRolDeUsuario() {
   mostrarProyectos(usuario.id)
-}
+}*/
 
 async function cargarProyectosPorDepartamento(idDepartamento) {
   try {

@@ -12,6 +12,16 @@ const cancelarProyecto = document.getElementById('cancelarProyecto');
 const data = localStorage.getItem('usuario');
 const user = JSON.parse(data);
 
+function irSegunRol(rol = user?.rol) {
+  if (rol === 'Admin') {
+    window.location.href = 'admin.html';
+  } else if (rol === 'DepLider') {
+    window.location.href = 'deplider.html';
+  } else {
+    window.location.href = 'usuario.html';
+  }
+}
+
 /***************
  * Obtener Departamentos
  */
@@ -236,7 +246,7 @@ form.addEventListener('submit', async (e) => {
     if (!response.ok) throw new Error('Response not ok');
 
     alert('Proyecto creado correctamente');
-    window.location.href = 'admin.html';
+    irSegunRol();
   } catch (error) {
     alert(`Error: ${error}`);
   }
@@ -247,11 +257,5 @@ form.addEventListener('submit', async (e) => {
  Cancelar proyecto 
  */
 cancelarProyecto.addEventListener('click', () => {
-  if (user.rol === 'Admin') {
-    window.location.href = 'admin.html';
-  } else if (user.rol === 'DepLider') {
-    window.location.href = 'deplider.html';
-  } else {
-    window.location.href = 'usuario.html';
-  }
+  irSegunRol();
 });

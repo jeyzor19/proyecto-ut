@@ -6,11 +6,17 @@ const { marcarComoCompletado, eliminarProyecto, obtenerProyectosEliminados, reac
 
 // Crear proyecto
 router.post('/', proyectoController.crearProyecto);
+router.put('/:proyectoId', proyectoController.actualizarProyecto);
+router.get(
+  '/porid/:usuarioId/:proyectoId',
+  proyectoController.obtenerProyectoPorId
+);
 router.get('/usuario/:idUsuario', proyectoController.obtenerProyecto);
 router.put('/:id/completar', marcarComoCompletado);
 router.put('/eliminar/:id', eliminarProyecto);
 router.get('/eliminados', obtenerProyectosEliminados);
 router.put('/reactivar/:id', reactivarProyecto); // ✅ Esta es la que necesitas
+router.get('/eliminados/usuario/:idUsuario', proyectoController.obtenerProyectosEliminadosPorUsuario);
 
 
 

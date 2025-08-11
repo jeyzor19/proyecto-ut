@@ -2,6 +2,7 @@ const {
   proyecto: proyectoDB,
   objetivo: objetivoDB,
   bitacora: bitacoraDB,
+  departamento: departamentoDB,
   proyectousuario: proyectousuarioDB,
   historial: historialDB,
   usuario: usuarioDB,
@@ -125,6 +126,264 @@ const crearProyecto = async (req, res) => {
     res.status(500).json({ mensaje: `Error interno del servidor. ${error}` });
   }
 };
+
+
+const actualizarProyecto = async (req, res) => {
+  try {
+    const { proyecto, usuario } = req.body;
+    const { proyectoId: id } = req.params; // ID del proyecto a actualizar
+
+    // Validar usuario autenticado
+    if (!usuario || !usuario?.id) {
+      return res.status(403).json({ mensaje: 'Usuario no autenticado.' });
+    }
+
+    // Validar que se proporcione el ID del proyecto
+    if (!id) {
+      return res.status(400).json({ mensaje: 'ID del proyecto es requerido.' });
+    }
+
+    // Buscar el proyecto existente
+    const proyectoExistente = await proyectoDB.findByPk(id, {
+      include: [
+        'objetivos',
+        'encargados',
+        {
+          model: usuarioDB,
+          as: 'creador',
+          include: ['departamentos'],
+        },
+      ],
+    });
+
+    if (!proyectoExistente) {
+      return res.status(404).json({ mensaje: 'Proyecto no encontrado.' });
+    }
+
+    // Buscar al usuario que actualiza y sus departamentos
+    const usuarioActualizador = await usuarioDB.findByPk(usuario.id, {
+      include: ['departamentos'],
+    });
+
+    if (
+      !usuarioActualizador ||
+      usuarioActualizador.departamentos.length === 0
+    ) {
+      return res
+        .status(404)
+        .json({ mensaje: 'Usuario o departamentos no encontrados.' });
+    }
+
+    // Verificar permisos: debe ser el creador o tener acceso al departamento
+    const perteneceADepto = usuarioActualizador.departamentos.some(
+      (dep) => dep.id === proyectoExistente.id_departamento
+    );
+
+    const esCreador = proyectoExistente.id_creador === usuario.id;
+
+    if (!esCreador && !perteneceADepto) {
+      return res
+        .status(403)
+        .json({ mensaje: 'No tienes permisos para actualizar este proyecto.' });
+    }
+
+    // Objeto para almacenar los cambios
+    const cambiosProyecto = {};
+    const cambiosRealizados = [];
+
+    // Validar y preparar campos a actualizar
+    if (proyecto.nombre && proyecto.nombre !== proyectoExistente.nombre) {
+      cambiosProyecto.nombre = proyecto.nombre;
+      cambiosRealizados.push(
+        `Nombre: "${proyectoExistente.nombre}" → "${proyecto.nombre}"`
+      );
+    }
+
+    if (
+      proyecto.descripcion &&
+      proyecto.descripcion !== proyectoExistente.descripcion
+    ) {
+      cambiosProyecto.descripcion = proyecto.descripcion;
+      cambiosRealizados.push(`Descripción actualizada`);
+    }
+
+    if (proyecto.area && proyecto.area !== proyectoExistente.area) {
+      cambiosProyecto.area = proyecto.area;
+      cambiosRealizados.push(
+        `Área: "${proyectoExistente.area}" → "${proyecto.area}"`
+      );
+    }
+
+    if (
+      proyecto.progreso !== undefined &&
+      proyecto.progreso !== proyectoExistente.progreso
+    ) {
+      cambiosProyecto.progreso = proyecto.progreso;
+      cambiosRealizados.push(
+        `Progreso: ${proyectoExistente.progreso}% → ${proyecto.progreso}%`
+      );
+    }
+
+    if (
+      proyecto.completado !== undefined &&
+      proyecto.completado !== proyectoExistente.completado
+    ) {
+      cambiosProyecto.completado = proyecto.completado;
+      cambiosRealizados.push(
+        `Estado: ${
+          proyectoExistente.completado ? 'Completado' : 'En progreso'
+        } → ${proyecto.completado ? 'Completado' : 'En progreso'}`
+      );
+    }
+
+    // Cambio de departamento (validar permisos)
+    if (
+      proyecto.idDepartamento &&
+      proyecto.idDepartamento !== proyectoExistente.id_departamento
+    ) {
+      const perteneceANuevoDepto = usuarioActualizador.departamentos.some(
+        (dep) => dep.id === +proyecto.idDepartamento
+      );
+
+      if (!perteneceANuevoDepto) {
+        return res
+          .status(403)
+          .json({ mensaje: 'No tienes acceso al departamento especificado.' });
+      }
+
+      cambiosProyecto.id_departamento = proyecto.idDepartamento;
+      cambiosRealizados.push(`Departamento actualizado`);
+    }
+
+    // Actualizar el proyecto si hay cambios
+    if (Object.keys(cambiosProyecto).length > 0) {
+      await proyectoDB.update(cambiosProyecto, {
+        where: { id: id },
+      });
+    }
+
+    // Actualizar encargados si se proporcionan
+    if (Array.isArray(proyecto.encargados)) {
+      // Eliminar asignaciones actuales
+      await proyectousuarioDB.destroy({
+        where: { id_proyecto: id },
+      });
+
+      // Crear nuevas asignaciones
+      if (proyecto.encargados.length > 0) {
+        const nuevasAsignaciones = proyecto.encargados.map(
+          (id_usuario_enc) => ({
+            id_proyecto: id,
+            id_usuario: +id_usuario_enc,
+          })
+        );
+        await proyectousuarioDB.bulkCreate(nuevasAsignaciones);
+        cambiosRealizados.push('Encargados actualizados');
+      }
+    }
+
+    // Actualizar objetivos si se proporcionan
+    if (Array.isArray(proyecto.objetivos)) {
+      // Eliminar objetivos actuales
+      await objetivoDB.destroy({
+        where: { id_proyecto: id },
+      });
+
+      // Crear nuevos objetivos
+      if (proyecto.objetivos.length > 0) {
+        const nuevosObjetivos = proyecto.objetivos.map((obj) => {
+          // Permitir tanto strings como objetos con descripcion y completado
+          if (typeof obj === 'string') {
+            return {
+              descripcion: obj,
+              completado: false,
+              id_proyecto: id,
+            };
+          } else {
+            return {
+              descripcion: obj.descripcion || obj,
+              completado: obj.completado || false,
+              id_proyecto: id,
+            };
+          }
+        });
+        await objetivoDB.bulkCreate(nuevosObjetivos);
+        cambiosRealizados.push('Objetivos actualizados');
+      }
+    }
+
+    // Crear entrada en bitácora si hubo cambios
+    if (cambiosRealizados.length > 0) {
+      await bitacoraDB.create({
+        id_proyecto: id,
+        comentario: `Cambios realizados: ${cambiosRealizados.join(', ')}`,
+        fecha: new Date(),
+        titulo: 'Actualización de proyecto',
+      });
+
+      // Registrar en historial
+      await historialDB.create({
+        id_usuario: usuario.id,
+        id_proyecto: id,
+        accion: 'Actualización de proyecto',
+        fecha: new Date(),
+      });
+    }
+
+    res.status(200).json({
+      mensaje:
+        cambiosRealizados.length > 0
+          ? 'Proyecto actualizado exitosamente.'
+          : 'No se realizaron cambios en el proyecto.',
+      cambios: cambiosRealizados,
+      id: id,
+    });
+  } catch (error) {
+    console.error('Error al actualizar el proyecto:', error);
+    res.status(500).json({ mensaje: `Error interno del servidor. ${error}` });
+  }
+};
+
+const obtenerProyectoPorId = async (req, res) => {
+  try {
+    const { usuarioId, proyectoId } = req.params;
+    console.log('usuarioId', usuarioId);
+    console.log('proyectoId', proyectoId);
+
+    const proyecto = await proyectoDB.findByPk(proyectoId, {
+      include: [
+        {
+          model: objetivoDB,
+          as: 'objetivos', // asegúrate que el alias coincida con tu modelo
+          attributes: ['id', 'descripcion', 'completado'],
+        },
+        {
+          model: usuarioDB,
+          as: 'encargados', // a través de la tabla intermedia proyectousuario
+          attributes: ['id', 'nombre', 'apellidos', 'correo'],
+          through: { attributes: [] }, // excluir campos de la tabla intermedia
+        },
+        {
+          model: usuarioDB,
+          as: 'creador', // el usuario que creó el proyecto
+          attributes: ['id', 'nombre', 'apellidos', 'correo'],
+        },
+        {
+          model: departamentoDB,
+          as: 'departamento',
+          attributes: ['id', 'nombre'],
+        },
+      ],
+    });
+
+    console.log('Proyecto: \n', proyecto);
+    res.status(200).send(proyecto);
+  } catch (error) {
+    console.error('Error al editar el proyecto:', error);
+    res.status(500).json({ mensaje: `Error interno del servidor. ${error}` });
+  }
+};
+
 
 const obtenerProyecto = async (req, res) => {
   try {
@@ -302,6 +561,99 @@ const obtenerProyectosEliminados = async (req, res) => {
     res.status(500).json({ mensaje: 'Error interno del servidor' });
   }
 };
+
+const obtenerProyectosEliminadosPorUsuario = async (req, res) => {
+  try {
+    const { idUsuario } = req.params;
+
+    const usuario = await usuarioDB.findByPk(idUsuario, {
+      include: ['departamentos'],
+    });
+    if (!usuario) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+
+    const usuarioRol = usuario.id_rol;
+    const usuarioDepartamentos = usuario.departamentos.map(dep => dep.id);
+
+    const includeObjetivosYEncargados = [
+      {
+        model: objetivoDB,
+        as: 'objetivos',
+        attributes: ['id', 'descripcion', 'completado']
+      },
+      {
+        model: usuarioDB,
+        as: 'encargados',
+        attributes: ['id', 'nombre', 'apellidos'],
+        through: { attributes: [] }
+      }
+    ];
+
+    let proyectos = [];
+
+    if (usuarioRol === 1) {
+      // Admin: todos los eliminados
+      proyectos = await proyectoDB.findAll({
+        where: { visible: false },
+        include: includeObjetivosYEncargados
+      });
+
+    } else if (usuarioRol === 2) {
+      // DepLider: eliminados de sus departamentos
+      proyectos = await proyectoDB.findAll({
+        where: { visible: false, id_departamento: usuarioDepartamentos },
+        include: includeObjetivosYEncargados
+      });
+
+    } else if (usuarioRol === 3) {
+      // Usuario: eliminados que creó o donde fue encargado
+      const eliminadosComoEncargado = await proyectoDB.findAll({
+        where: { visible: false },
+        include: [
+          ...includeObjetivosYEncargados,
+          {
+            model: usuarioDB,
+            as: 'encargados',
+            attributes: ['id'],
+            through: { attributes: [] }
+          }
+        ]
+      });
+
+      const filtrados = eliminadosComoEncargado.filter(p =>
+        p.encargados.some(e => e.id === +idUsuario)
+      );
+
+      const eliminadosCreados = await proyectoDB.findAll({
+        where: { visible: false, id_creador: idUsuario },
+        include: includeObjetivosYEncargados
+      });
+
+      const mapa = new Map();
+      [...eliminadosCreados, ...filtrados].forEach(p => mapa.set(p.id, p));
+      proyectos = Array.from(mapa.values());
+    }
+
+    // (Opcional) si quieres mantener progreso calculado:
+    proyectos = proyectos.map(p => {
+      const objetivos = p.objetivos || [];
+      const total = objetivos.length;
+      const completados = objetivos.filter(o => o.completado).length;
+      const progreso = total === 0 ? 0 : Math.round((completados / total) * 100);
+      const json = p.toJSON();
+      json.progreso = progreso;
+      return json;
+    });
+
+    res.status(200).json(proyectos);
+  } catch (error) {
+    console.error('Error al obtener proyectos eliminados por usuario:', error);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+};
+
+
 const reactivarProyecto = async (req, res) => {
   try {
     const id = req.params.id;
@@ -326,10 +678,13 @@ const reactivarProyecto = async (req, res) => {
 module.exports = {
   crearProyecto,
   obtenerProyecto,
+  obtenerProyectoPorId,
   marcarComoCompletado,
   eliminarProyecto,
   obtenerProyectosEliminados,
-  reactivarProyecto
+  reactivarProyecto,
+  obtenerProyectosEliminadosPorUsuario,
+  actualizarProyecto
 };
 
 // UPDATE `usuario` SET `id_rol` = '1', WHERE `id` = 11;

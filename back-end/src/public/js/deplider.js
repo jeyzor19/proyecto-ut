@@ -14,7 +14,6 @@ const listaDepartamentos = document.getElementById('listaDepartamentos');
 const contenedorProyectos = document.getElementById('proyectosContainer');
 const btnNuevoProyecto = document.getElementById('btnNuevoProyecto');
 const btnCambiarVista = document.getElementById('btnCambiarVista');
-const btnVerEliminados = document.getElementById('btnVerEliminados');
 
 let vistaCompacta = true;
 
@@ -27,6 +26,10 @@ document.getElementById("toggleSidebar").addEventListener("click", () => {
 
 btnNuevoProyecto.addEventListener('click', () => {
   window.location.href = 'crear-proyecto.html';
+});
+
+document.getElementById('btnVerEliminados').addEventListener('click', () => {
+  window.location.href = 'proyectos-eliminados.html';
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -44,9 +47,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 // ================== Cargar proyectos ==================
-async function cargarProyectosPorRolDeUsuario() {
+/*async function cargarProyectosPorRolDeUsuario() {
   mostrarProyectos(usuario.id)
-}
+}*/
 
 document.addEventListener('DOMContentLoaded', () => {
   llenarSidebarDepartamentos();
@@ -64,17 +67,15 @@ async function cargarProyectosPorDepartamento(idDepartamento) {
 
 
 // ================== Cambiar vista ==================
-btnCambiarVista.addEventListener('click', () => {
+/*btnCambiarVista.addEventListener('click', () => {
   vistaCompacta = !vistaCompacta;
   contenedorProyectos.classList.toggle('vista-compacta', vistaCompacta);
   contenedorProyectos.classList.toggle('vista-detallada', !vistaCompacta);
-});
+});*/
 
 // ================== Ver proyectos eliminados ==================
-btnVerEliminados.addEventListener('click', () => {
-  window.location.href = 'proyectos-eliminados.html';
-});
+
 
 // ================== Inicializar ==================
-cargarDepartamentos();
-cargarProyectosPorRolDeUsuario();
+//cargarDepartamentos();
+//cargarProyectosPorRolDeUsuario();

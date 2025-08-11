@@ -1,6 +1,6 @@
 async function llenarSidebarDepartamentos() {
   const contenedor = document.getElementById('lista-departamentos');
-  contenedor.innerHTML = `<li><button class="dep-btn" data-id="">Todos</button></li>`; // opción por defecto
+  contenedor.innerHTML = `<li><button class="dep-btn selected" data-id="">Todos</button></li>`; // opción por defecto
 
   try {
     const usuarioActual = JSON.parse(localStorage.getItem('usuario'));
@@ -9,7 +9,7 @@ async function llenarSidebarDepartamentos() {
 
     departamentos.forEach(dep => {
       const li = document.createElement('li');
-      li.innerHTML = `<button class="dep-btn selected" data-id="${dep.id}">${dep.nombre}</button>`;
+      li.innerHTML = `<button class="dep-btn" data-id="${dep.id}">${dep.nombre}</button>`;
       contenedor.appendChild(li);
     });
 
@@ -24,6 +24,9 @@ async function llenarSidebarDepartamentos() {
     const idDep = btn.getAttribute('data-id') || '';
     filtrarProyectosPorDepartamento(idDep);
     });
+    // Aplicar filtro inicial "Todos"
+    filtrarProyectosPorDepartamento('');
+
   } catch (err) {
     console.error('Error al cargar departamentos del usuario', err);
   }
@@ -76,12 +79,20 @@ async function eliminarProyecto(idProyecto) {
         }
 
 
+export async function mostrarProyectos(idUsuario) {
+  idUsuarioFirmado = idUsuario;
+  await filtrarProyectosPorDepartamento(''); // reutiliza tu lógica actual
+}
+
+let idUsuarioFirmado = null;
 function renderizarProyectos(proyectos, idUsuario) {
+    idUsuarioFirmado = idUsuario;
     const proyectosContainer = document.getElementById('proyectosContainer');
     proyectosContainer.innerHTML = ''; // Limpiar proyectos anteriores
 
     proyectos.forEach(proyecto => {
         const {
+            id: proyectoId,
             nombre,
             descripcion,
             area,
@@ -124,15 +135,15 @@ function renderizarProyectos(proyectos, idUsuario) {
             <p><strong>Objetivos:</strong></p>
             <ul>${listaObjetivos}</ul>
             <p><strong>Progreso:</strong> <span class="texto-progreso">${progreso}%</span></p>
-            <div class="barra-progreso" data-id="${proyecto.id}">
+            <div class="barra-progreso" data-id="${proyectoId}">
                 <div class="progreso-interno" style="width: ${progreso}%;"></div>
             </div>
         </div>
         <div class="acciones-proyecto">
-            <button>Editar</button>
+            <button id="editar-proyecto" data-id="${proyectoId}">Editar</button>
             <button>+ Bitácora</button>
             <button>Ver Bitácoras</button>
-            <button onclick="eliminarProyecto(${proyecto.id})">Eliminar</button>
+            <button onclick="eliminarProyecto(${proyectoId})">Eliminar</button>
             <button>Completar</button>
         </div>
         `;
@@ -143,7 +154,7 @@ function renderizarProyectos(proyectos, idUsuario) {
         const botonCompletar = tarjeta.querySelector('button:last-child');
         botonCompletar.addEventListener('click', async () => {
             try {
-                const response = await fetch(`http://localhost:3000/api/proyectos/${proyecto.id}/completar`, {
+                const response = await fetch(`http://localhost:3000/api/proyectos/${proyectoId}/completar`, {
                     method: 'PUT',
                 });
 
@@ -195,6 +206,17 @@ function renderizarProyectos(proyectos, idUsuario) {
     });
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('click', (ev) => {
+    if (ev.target && ev.target.id === 'editar-proyecto') {
+      const proyectoId = ev.target.dataset.id;
+      console.log(proyectoId);
+      console.log(ev);
+      console.log(ev.target);
+      console.log(ev.target.dataset);
+      window.location.href = `editar-proyecto.html?usuarioId=${idUsuarioFirmado}&proyectoId=${proyectoId}`;
+    }
+  });
+});
 
-
-export { llenarSidebarDepartamentos, filtrarProyectosPorDepartamento};
+export { llenarSidebarDepartamentos, filtrarProyectosPorDepartamento, };

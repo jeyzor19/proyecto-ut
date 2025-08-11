@@ -45,7 +45,8 @@ async function filtrarProyectosEliminadosPorDepartamento(idDepartamento = null) 
   container.innerHTML = '';
 
   try {
-    const response = await fetch('/api/proyectos/eliminados');
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
+    const response = await fetch(`/api/proyectos/eliminados/usuario/${usuario.id}`);
     const proyectos = await response.json();
 
     const filtrados = idDepartamento
