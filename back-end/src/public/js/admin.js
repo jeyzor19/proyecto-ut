@@ -1,6 +1,7 @@
 // admin.js
 
 import {llenarSidebarDepartamentos } from './obtnrproyectos.js';
+import { wireBitacoraModal, wireBitacorasViewer  } from './bitacoras.js';
 
 const usuario = JSON.parse(localStorage.getItem('usuario'));
 if (!usuario || usuario.rol !== 'Admin') {
@@ -52,6 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
   llenarSidebarDepartamentos();
+  wireBitacoraModal();
+  wireBitacorasViewer();
 });
 
 

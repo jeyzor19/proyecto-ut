@@ -41,6 +41,48 @@
     </main>
   </div>
 
+  <!-- Modal: Agregar Bitácora -->
+        <div id="modal-bitacora" class="modal hidden" aria-hidden="true">
+        <div class="modal-backdrop" data-close-modal></div>
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="bitacoraTitleLabel">
+            <header class="modal-header">
+            <h3 id="bitacoraTitleLabel">Agregar bitácora</h3>
+            <button class="modal-close" title="Cerrar" data-close-modal>&times;</button>
+            </header>
+            <section class="modal-body">
+            <label>
+                Título (opcional)
+                <input id="bitacoraTitulo" type="text" maxlength="250" />
+            </label>
+            <label style="display:block;margin-top:8px;">
+                Comentario <span style="color:#c00">*</span>
+                <textarea id="bitacoraComentario" rows="5" placeholder="Escribe tu comentario. Puedes firmar al final si deseas." required></textarea>
+            </label>
+            </section>
+            <footer class="modal-footer">
+            <button id="bitacoraCancelar" data-close-modal>Cancelar</button>
+            <button id="bitacoraGuardar">Guardar</button>
+            </footer>
+        </div>
+        </div>
+
+        <!-- Modal: Ver Bitácoras -->
+        <div id="modal-bitacoras" class="modal hidden" aria-hidden="true">
+            <div class="modal-backdrop" data-close-modal></div>
+            <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="bitacorasTitleLabel">
+                <header class="modal-header">
+                <h3 id="bitacorasTitleLabel">Bitácoras del proyecto</h3>
+                <button class="modal-close" title="Cerrar" data-close-modal>&times;</button>
+                </header>
+                <section class="modal-body">
+                <div id="bitacorasLista" class="bitacoras-lista">Cargando…</div>
+                </section>
+                <footer class="modal-footer">
+                <button data-close-modal>Cerrar</button>
+                </footer>
+            </div>
+        </div>
+        
   <script type="module" src="js/usuario.js"></script>
 </body>
 </html>

@@ -280,3 +280,92 @@ body {
   white-space: normal;       /* permite saltos de línea */
   word-wrap: break-word;     /* fuerza corte de palabra si es muy larga */
 }
+
+/* ===== Modal genérico bitacoras===== */
+.modal { 
+  position: fixed; inset: 0; 
+  display: grid; place-items: center;
+  z-index: 1000;
+  padding: 12px;
+}
+.modal.hidden { display: none !important; }
+
+.modal-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,.5);
+}
+
+.modal-content {
+  position: relative;
+  width: clamp(340px, 92vw, 640px);
+  max-height: 85vh;
+  overflow: auto;
+  overflow-x: hidden; 
+  background: #fff;
+  box-sizing: border-box;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  padding: 18px 22px 24px; 
+  animation: modal-scale .15s ease-out;
+  font-family: inherit;
+}
+
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px;
+}
+.modal-header h3 { margin: 0; font-size: 1.1rem; }
+
+.modal-close {
+  border: 0; background: transparent; font-size: 1.5rem; line-height: 1;
+  cursor: pointer;
+}
+
+.modal-body { 
+  display: grid; 
+  row-gap: 10px; 
+}
+
+.modal-body label { display:block; font-weight: 600; margin: 0px; }
+.modal-body input[type="text"],
+.modal-body textarea {
+  width: 100%;
+  border: 1px solid #d1d5db; /* gris claro */
+  border-radius: 8px;
+  padding: 8px 10px;
+  font: inherit;
+  resize: vertical;
+}
+
+.modal-footer {
+  display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px;
+}
+.modal-footer button {
+  padding: 8px 14px; border: 0; border-radius: 8px; cursor: pointer;
+}
+#bitacoraCancelar { background: #e5e7eb; }         /* gris */
+#bitacoraGuardar  { background: #10b981; color:#fff; } /* verde (a juego con tu tema) */
+
+@keyframes modal-scale {
+  from { transform: scale(.98); opacity: 0; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+
+/* Evitar scroll del body cuando el modal está abierto */
+body.modal-open { overflow: hidden; }
+
+/* Lista de bitácoras */
+.bitacoras-lista { display: grid; gap: 12px; }
+.bitacora-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #fff;
+}
+.bitacora-item header {
+  display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap;
+}
+.bitacora-item header .titulo { font-weight: 700; }
+.bitacora-item header .fecha { color: #6b7280; font-size: .9rem; }
+.bitacora-item .comentario { margin-top: 6px; white-space: pre-wrap; } /* respeta saltos de línea */
+.bitacoras-empty { color:#6b7280; font-style: italic; }

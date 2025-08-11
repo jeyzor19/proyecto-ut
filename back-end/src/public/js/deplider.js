@@ -1,5 +1,6 @@
 // deplider.js
 import {llenarSidebarDepartamentos } from './obtnrproyectos.js';
+import { wireBitacoraModal, wireBitacorasViewer  } from './bitacoras.js';
 
 
 // ================== Validar sesión ==================
@@ -53,6 +54,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.addEventListener('DOMContentLoaded', () => {
   llenarSidebarDepartamentos();
+  wireBitacoraModal();
+  wireBitacorasViewer();
 });
 
 async function cargarProyectosPorDepartamento(idDepartamento) {

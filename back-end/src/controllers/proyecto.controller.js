@@ -674,6 +674,39 @@ const reactivarProyecto = async (req, res) => {
   }
 };
 
+const crearBitacoraSimple = async (req, res) => {
+  try {
+    const { id_proyecto, titulo, comentario } = req.body;
+    if (!id_proyecto || !comentario)
+      return res.status(400).json({ mensaje: 'Faltan campos.' });
+
+    const row = await bitacoraDB.create({
+      id_proyecto,
+      titulo: titulo || null,
+      comentario,
+      fecha: new Date(),
+    });
+    res.json(row);
+  } catch (e) {
+    console.error('Error creando bitácora:', e);
+    res.status(500).json({ mensaje: 'Error creando bitácora' });
+  }
+};
+
+const listarBitacoras = async (req, res) => {
+  try {
+    const { idProyecto } = req.params;
+    const rows = await bitacoraDB.findAll({
+      where: { id_proyecto: idProyecto },
+      attributes: ['id','titulo','comentario','fecha'],
+      order: [['fecha','DESC']],
+    });
+    res.json(rows);
+  } catch (e) {
+    console.error('Error listando bitácoras:', e);
+    res.status(500).json({ mensaje: 'Error listando bitácoras' });
+  }
+};
 
 module.exports = {
   crearProyecto,
@@ -684,7 +717,9 @@ module.exports = {
   obtenerProyectosEliminados,
   reactivarProyecto,
   obtenerProyectosEliminadosPorUsuario,
-  actualizarProyecto
+  actualizarProyecto,
+  crearBitacoraSimple,
+  listarBitacoras
 };
 
 // UPDATE `usuario` SET `id_rol` = '1', WHERE `id` = 11;

@@ -141,8 +141,8 @@ function renderizarProyectos(proyectos, idUsuario) {
         </div>
         <div class="acciones-proyecto">
             <button id="editar-proyecto" data-id="${proyectoId}">Editar</button>
-            <button>+ Bitácora</button>
-            <button>Ver Bitácoras</button>
+            <button class="btn-add-bitacora" data-proyecto-id="${proyectoId}">+ Bitácora</button>
+            <button class="btn-ver-bitacoras" data-proyecto-id="${proyectoId}">Ver Bitácoras</button>
             <button onclick="eliminarProyecto(${proyectoId})">Eliminar</button>
             <button>Completar</button>
         </div>
