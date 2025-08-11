@@ -31,6 +31,14 @@ body {
   font-size: 24px;
 }
 
+.titulo1 {
+  color: #ffffff;
+  margin: 0;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
 .acciones-superior {
   display: flex;
   align-items: center;
@@ -38,9 +46,9 @@ body {
 }
 
 #logoutBtn {
-  background-color: #296b3f;
+  background-color: #3498db;
   color: white;
-  border: 1px solid white; /* 👈 Borde blanco delgado */
+  border: none;
   padding: 8px 14px;
   border-radius: 4px;
   cursor: pointer;
@@ -48,7 +56,7 @@ body {
 }
 
 #logoutBtn:hover {
-  background-color: #112c1a;
+  background-color: #2c80b4;
 }
 
 
@@ -273,7 +281,6 @@ body {
   word-wrap: break-word;     /* fuerza corte de palabra si es muy larga */
 }
 
-
 /* ===== Modal genérico bitacoras===== */
 .modal { 
   position: fixed; inset: 0; 
@@ -294,7 +301,7 @@ body {
   max-height: 85vh;
   overflow: auto;
   overflow-x: hidden; 
-  background: #fff;
+  background: #1ab192;
   box-sizing: border-box;
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0,0,0,.25);
@@ -360,5 +367,28 @@ body.modal-open { overflow: hidden; }
 }
 .bitacora-item header .titulo { font-weight: 700; }
 .bitacora-item header .fecha { color: #6b7280; font-size: .9rem; }
-.bitacora-item .comentario { margin-top: 6px; white-space: pre-wrap; } /* respeta saltos de línea */
+.bitacora-item .comentario { margin-top: 6px; white-space: pre-wrap; color: black; } /* respeta saltos de línea */
 .bitacoras-empty { color:#6b7280; font-style: italic; }
+
+/* Logo en la barra superior */
+        .logo-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo-container a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .logo-container img {
+            height: 35px;
+            width: auto;
+            background-color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
