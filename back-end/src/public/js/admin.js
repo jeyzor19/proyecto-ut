@@ -83,3 +83,29 @@ btnVista.addEventListener('click', () => {
 // ================== Inicializar ==================
 cargarDepartamentos();
 cargarProyectosPorRolDeUsuario();
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('btn-volver').addEventListener('click', () => {
+        const usuario = JSON.parse(localStorage.getItem('usuario'));
+
+        if (!usuario || !usuario.rol) {
+            alert('No se pudo determinar el rol del usuario.');
+            return;
+        }
+
+        switch (usuario.rol.toLowerCase()) {
+            case 'admin':
+                window.location.href = 'dashboardusuarios.html';
+                break;
+            case 'deplider':
+                window.location.href = 'deplider.html';
+                break;
+            case 'usuario':
+                window.location.href = 'usuario.html';
+                break;
+            default:
+                alert('Rol de usuario no reconocido.');
+        }
+    });
+});
